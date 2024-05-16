@@ -1,0 +1,65 @@
+Temat projektu: Paper Soccer (Piłkarzyki na kartce) (wstępna nazwa)
+
+ 
+
+Gotowa gra będzie przypominała swoją funkcjonalnością grę “Piłka” z portalu kurnik.pl. Gra będzie trwała do zdobycia 
+określonej liczby goli, użytkownik będzie miał możliwość wyboru tego limitu. Poniżej przedstawiamy wybrane argumenty, które przekonały 
+nas do zrobienia właśnie tej gry
+
+
+Prostota zasad: Gra ma proste zasady, które można łatwo zrozumieć i opanować. Nie wymaga skomplikowanych 
+strategii ani wielu różnych ruchów, co sprawia, że jest dostępna dla szerokiej gamy graczy, niezależnie od ich doświadczenia.
+
+Możliwość rozbudowy: Mimo że podstawowa wersja gry jest prosta, istnieje wiele sposobów na rozbudowę i urozmaicenie rozgrywki. 
+Można dodać nowe elementy, takie jak różne rodzaje ruchu piłki, specjalne umiejętności czy różne rodzaje boisk.
+
+Interaktywność: Gra Piłka w Kratkę jest interaktywna i angażująca, zarówno dla graczy, jak i dla widzów. Wymaga szybkich decyzji 
+i refleksu, co sprawia, że jest emocjonująca i satysfakcjonująca.
+
+
+Wstępnie dzielimy proces wykonania projekt na 5 faz:
+
+Faza 1: Analiza i zaplecze teoretyczne:
+Określenie podstawowych funkcji gry, interfejsu użytkownika i ewentualnych dodatkowych funkcji.
+Stworzenie szkiców interfejsu użytkownika, w tym planszy do gry, przycisków oraz dodanie podstawowej wersji instrukcji.
+
+Faza 2: Implementacja podstawowych funkcji:
+Stworzenie podstawowego interfejsu użytkownika: Implementacja widżetu planszy do gry, przycisków rozpoczęcia gry i podstawowego 
+poruszania się piłki. 
+
+Faza 3: Rozbudowa funkcjonalności:
+Dodanie podglądu wszystkich możliwości ruchu w danym momencie
+Implementacja logiki wygrywania i przegrywania: Dodanie warunku zwycięstwa (strzelenie bramki przeciwnika). Zaimplementowanie 
+mechanizmu ruchu piłki odbijania się od krawędzi oraz tworzenia kombinacji większej ilości ruchów, zgodnie z instrukcją
+
+Faza 4: Testowanie i poprawki
+Testowanie: Przeprowadzenie testów jednostkowych i testów interakcji z użytkownikiem.
+Poprawki i optymalizacja: Poprawa błędów, optymalizacja kodu i interfejsu użytkownika.
+
+Faza 5: Finalizacja i publikacja:
+Dodanie dodatkowych funkcji: Jeśli jest to możliwe, dodanie dodatkowych funkcji, takich jak dźwięki, animacje, zapisywanie wyników itp.
+Publikacja: Przygotowanie projektu do publikacji, w tym dokończenie dokumentacji itp.
+Wsparcie i aktualizacje: Monitorowanie opinii użytkowników, rozwiązywanie problemów i wprowadzanie aktualizacji.
+ 
+
+Mamy też wstępny zakres bibliotek, które chcemy wykorzystać:
+
+PyQt i Tkinter: Do tworzenia interfejsu użytkownika. Możemy zbudować bardziej zaawansowany interfejs graficzny z przyciskami, polami tekstowymi itp.
+
+numpy: Do operacji na tablicach. Może być przydatne przy bardziej zaawansowanej logice gry, na przykład do przechowywania i manipulowania danymi planszy.
+
+Pillow: Chcemy dodać niestandardową grafikę, np. tła, ikony, czy animacje do gry.
+
+Sounddevice lub PyAudio: Do obsługi dźwięku. Możemy dodać efekty dźwiękowe do interakcji w grze, takie jak dźwięki ruchu piłki, trafienia w bramkę itp.
+
+pygame.mixer: Użyjemy wbudowanego modułu pygame.mixer do obsługi dźwięku w grze, np. po strzeleniu gola przez daną drużynę
+
+pygame.font: Do renderowania tekstu. Jeśli chcemy wyświetlać instrukcje, punktację lub inne teksty w grze, to ten moduł będzie przydatny.
+
+random: Do generowania losowych liczb. Możemy użyć go do losowego ustawienia początkowej pozycji piłki, wyboru kierunku ruchu przeciwnika itp.
+
+json: Do zapisywania i odczytywania danych gry. Możemy użyć go do przechowywania stanu gry, punktacji, ustawień itp.
+
+
+Podzielimy pracę na dwie pary: Jedna para zajmie się mechanikami gry, druga natomiast opracuje graficzny interfejs aplikacji.
+
