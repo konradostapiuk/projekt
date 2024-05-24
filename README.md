@@ -1,0 +1,1 @@
+Projekt zgłoszony? Brakuje (też) składu grupy w opisie w repozytorium. WP
