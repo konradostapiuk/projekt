@@ -1,10 +1,10 @@
 import pygame
 
 OKNO_SZER = 800
-OKNO_WYS = 1000
+OKNO_WYS = 950
 FPS = 60
  
-TŁO = (0, 0, 0)
+TŁO = (9, 145, 13)
 
 pygame.init()
 okienko = pygame.display.set_mode((OKNO_SZER, OKNO_WYS), 0, 32)
