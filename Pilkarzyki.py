@@ -1,7 +1,7 @@
 import pygame
 
 OKNO_SZER = 800
-OKNO_WYS = 950
+OKNO_WYS = 700
 FPS = 60
  
 TŁO = (9, 145, 13)
