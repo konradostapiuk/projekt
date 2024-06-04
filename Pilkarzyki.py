@@ -6,7 +6,7 @@ FPS = 60
 
 pygame.init()
 okienko = pygame.display.set_mode((OKNO_SZER, OKNO_WYS), 0, 32)
-pygame.display.set_caption("Piłkarzyki")
+pygame.display.set_caption("Piwkorzyki")
 zegarek = pygame.time.Clock()
 
 
