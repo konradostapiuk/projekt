@@ -30,9 +30,20 @@ class Przycisk:
         window.blit(self.button_image, (self.x_cord, self.y_cord))
 
 
-przycisk_graj = Przycisk((OKNO_SZER - 200) // 2 - 100, 300, "przycisk_graj2", 400, 150)
-przycisk_zasady = Przycisk((OKNO_SZER - 200) // 2 - 100, 500, "przycisk_zasady2", 400, 150)
-przycisk_wyjdz = Przycisk((OKNO_SZER - 200) // 2 - 100, 700, "przycisk_wyjdz2", 400, 150)
+przycisk_szer = 400
+przycisk_wys = 120
+odstepy_y = 30
+
+
+tytul_y = 150
+pierwszy_przycisk_y = tytul_y + 150  
+odstepy_miedzy_przyciskami = przycisk_wys + odstepy_y
+
+
+przycisk_graj = Przycisk((OKNO_SZER - przycisk_szer) // 2, pierwszy_przycisk_y, "przycisk_graj3", przycisk_szer, przycisk_wys)
+przycisk_zasady = Przycisk((OKNO_SZER - przycisk_szer) // 2, pierwszy_przycisk_y + odstepy_miedzy_przyciskami, "przycisk_zasady3", przycisk_szer, przycisk_wys)
+przycisk_ustawienia = Przycisk((OKNO_SZER - przycisk_szer) // 2, pierwszy_przycisk_y + 2 * odstepy_miedzy_przyciskami, "przycisk_ustawienia3", przycisk_szer, przycisk_wys)
+przycisk_wyjdz = Przycisk((OKNO_SZER - przycisk_szer) // 2, pierwszy_przycisk_y + 3 * odstepy_miedzy_przyciskami, "przycisk_wyjdz3", przycisk_szer, przycisk_wys)
 
 
 current_screen = "menu"
@@ -42,7 +53,24 @@ def pokaz_zasady(window):
     font = pygame.font.Font(None, 36)
     tekst = [
         "Zasady gry:",
-#TU WPISZ ZASADY KONRAD     
+        "1. Zasada 1",
+        "2. Zasada 2",
+        "3. Zasada 3",
+        "Kliknij, aby wrócić do menu"
+    ]
+    for i, line in enumerate(tekst):
+        rendered_text = font.render(line, True, (255, 255, 255))
+        window.blit(rendered_text, (50, 50 + i * 40))
+
+
+def pokaz_ustawienia(window):
+    window.fill((0, 0, 0))  
+    font = pygame.font.Font(None, 36)
+    tekst = [
+        "Ustawienia:",
+        "1. Ustawienie 1",
+        "2. Ustawienie 2",
+        "3. Ustawienie 3",
         "Kliknij, aby wrócić do menu"
     ]
     for i, line in enumerate(tekst):
@@ -60,20 +88,25 @@ while graj:
                     pass  
                 elif przycisk_zasady.klik():
                     current_screen = "zasady"
+                elif przycisk_ustawienia.klik():
+                    current_screen = "ustawienia"
                 elif przycisk_wyjdz.klik():
                     graj = False
-            elif current_screen == "zasady":
+            elif current_screen in ["zasady", "ustawienia"]:
                 current_screen = "menu"
     
-    if current_screen == "menu":
+    if current_screen == "menu":  
         okienko.blit(tlo, (0, 0))
-        tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, 150)) 
+        tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, tytul_y))  
         okienko.blit(tytul_image, tytul_rect)
         przycisk_graj.wyswietl(okienko)
         przycisk_zasady.wyswietl(okienko)
+        przycisk_ustawienia.wyswietl(okienko)
         przycisk_wyjdz.wyswietl(okienko)
     elif current_screen == "zasady":
         pokaz_zasady(okienko)
+    elif current_screen == "ustawienia":
+        pokaz_ustawienia(okienko)
  
     pygame.display.update()
     zegarek.tick(FPS)
