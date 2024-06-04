@@ -1,7 +1,7 @@
 import pygame
 
 OKNO_SZER = 1024
-OKNO_WYS = 900
+OKNO_WYS = 1024
 FULLSCREEN_SZER = 1920
 FULLSCREEN_WYS = 1080
 FPS = 60
@@ -11,8 +11,15 @@ okienko = pygame.display.set_mode((OKNO_SZER, OKNO_WYS), 0, 32)
 pygame.display.set_caption("Piwkorzyki")
 zegarek = pygame.time.Clock()
 
+moja_czcionka = "pricedown bl.otf"
+
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
+tlo_zasady = pygame.image.load("tlo_zasady3.png")
+tlo_zasady2 = pygame.image.load("tlo_zasady2.png")
+tlo_ustawienia = pygame.image.load("tlo_ustawienia.png")
+tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
+
 
 tytul_image = pygame.image.load("tytul2.png")
 zasady_tytul_image = pygame.image.load("zasady_tytul2.png")
@@ -70,55 +77,90 @@ przyciski_menu = ustawienia_przyciski(OKNO_SZER, odstepy_y + przycisk_wys, przyc
 przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "fullscreen", 200, 200)
 
 current_screen = "menu"
+def wrap_text(text, font, max_width):
+    words = text.split(' ')
+    lines = []
+    current_line = ""
+    for word in words:
+        test_line = current_line + word + " "
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word + " "
+    lines.append(current_line)
+    return lines
 
 def pokaz_zasady(window):
-    window.blit(tlo, (0, 0))
-    zasady_tytul_rect = zasady_tytul_image.get_rect(center=(OKNO_SZER // 2, 50))
-    window.blit(zasady_tytul_image, zasady_tytul_rect)
+    window.blit(tlo_zasady, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 100)
+    zasady_tytul_text = "ZASADY:"
+    zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255))  
+    zasady_tytul_rect = zasady_tytul.get_rect(center=(OKNO_SZER // 2, 80))
+    window.blit(zasady_tytul, zasady_tytul_rect)
     
-    font = pygame.font.Font(None, 24)
+    font = pygame.font.Font(moja_czcionka, 24)  
     tekst = [
         "Gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek z bramkami o szerokości dwóch kratek kształt boiska przedstawiono na ilustracji poniżej",
         "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki, która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie) i w wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
         "Golem będziemy również nazywać sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny. ",
+        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
         "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
     ]
-    for i, line in enumerate(tekst):
-        rendered_text = font.render(line, True, (255,255,255))
-        window.blit(rendered_text, (50, 150 + i * 40))
+    
+    y_offset = 200
+    line_height = font.get_linesize()  
+    paragraph_spacing = 40 
+    for paragraph in tekst:
+        lines = wrap_text(paragraph, font, OKNO_SZER - 100)
+        for line in lines:
+            rendered_text = font.render(line, True, (255, 255, 255))  
+            window.blit(rendered_text, (OKNO_SZER // 2 - rendered_text.get_width() // 2, y_offset))
+            y_offset += line_height
+        y_offset += paragraph_spacing  
     
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 40))
+    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 def pokaz_zasady_fullscreen(window):
-    window.blit(tlo_fullscreen, (0, 0))
-    zasady_tytul_image_fs = pygame.transform.scale(zasady_tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 10))
-    zasady_tytul_rect = zasady_tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 10))
-    window.blit(zasady_tytul_image_fs, zasady_tytul_rect)
+    window.blit(tlo_zasady2, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 150)
+    zasady_tytul_text = "ZASADY:"
+    zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255)) 
+    zasady_tytul_rect = zasady_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
+    window.blit(zasady_tytul, zasady_tytul_rect)
 
-    font = pygame.font.Font(None, 72)
+    font = pygame.font.Font(moja_czcionka, 35)  
     tekst = [
         "Gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek z bramkami o szerokości dwóch kratek kształt boiska przedstawiono na ilustracji poniżej",
         "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki, która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie) i w wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
         "Golem będziemy również nazywać sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny. ",
+        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
         "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
-        ]
-    for i, line in enumerate(tekst):
-        rendered_text = font.render(line, True, (255, 243, 13))
-        window.blit(rendered_text, (FULLSCREEN_SZER // 4, FULLSCREEN_WYS // 4 + i * 80))
-        
+    ]
+
+    y_offset = FULLSCREEN_WYS // 5
+    line_height = font.get_linesize()  
+    paragraph_spacing = 50  
+    for paragraph in tekst:
+        lines = wrap_text(paragraph, font, FULLSCREEN_SZER - 100)
+        for line in lines:
+            rendered_text = font.render(line, True, (255, 255, 255))  
+            window.blit(rendered_text, (FULLSCREEN_SZER // 2 - rendered_text.get_width() // 2, y_offset))
+            y_offset += line_height
+        y_offset += paragraph_spacing  
     
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
 
 def pokaz_ustawienia(window):
-    window.blit(tlo, (0, 0))
-    ustawienia_tytul_rect = ustawienia_tytul_image.get_rect(center=(OKNO_SZER // 2, 50))
-    window.blit(ustawienia_tytul_image, ustawienia_tytul_rect)
-    
-    font = pygame.font.Font(None, 36)
+    window.blit(tlo_ustawienia, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 100)
+    ustawienia_tytul_text = "USTAWIENIA:"
+    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
+    ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(OKNO_SZER // 2, 80))
+    window.blit(ustawienia_tytul, ustawienia_tytul_rect)
+    font = pygame.font.Font(moja_czcionka, 45)
     tekst = [
         ""
     ]
@@ -129,18 +171,20 @@ def pokaz_ustawienia(window):
     przycisk_pelny_ekran.wyswietl(window)
     
     napis = font.render("FULLSCREEN", True, (255, 255, 255))
-    window.blit(napis, ((OKNO_SZER - napis.get_width()) // 2, (OKNO_WYS - 80) // 2 + 90))
+    window.blit(napis, ((OKNO_SZER - napis.get_width()) // 2, (OKNO_WYS) // 2 - 90))
 
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 40))
+    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 def pokaz_ustawienia_fullscreen(window):
-    window.blit(tlo_fullscreen, (0, 0))
-    ustawienia_tytul_image_fs = pygame.transform.scale(ustawienia_tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 10))
-    ustawienia_tytul_rect = ustawienia_tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 10))
-    window.blit(ustawienia_tytul_image_fs, ustawienia_tytul_rect)
+    window.blit(tlo_ustawienia2, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 150)
+    ustawienia_tytul_text = "USTAWIENIA:"
+    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
+    ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
+    window.blit(ustawienia_tytul, ustawienia_tytul_rect)
     
-    font = pygame.font.Font(None, 72)
+    font = pygame.font.Font(moja_czcionka, 72)
     tekst = [
              
              ""]
@@ -154,10 +198,10 @@ def pokaz_ustawienia_fullscreen(window):
     przycisk_pelny_ekran.wyswietl(window)
 
     napis = font.render("FULLSCREEN", True, (255, 255, 255))
-    window.blit(napis, ((FULLSCREEN_SZER - napis.get_width()) // 2, (FULLSCREEN_WYS - 300) // 2 + 350))
+    window.blit(napis, ((FULLSCREEN_SZER - napis.get_width()) // 2, (FULLSCREEN_WYS) // 2 - 250))
 
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
+    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 150))
 
 def pokaz_menu(window):
     window.blit(tlo, (0, 0))
@@ -168,8 +212,8 @@ def pokaz_menu(window):
 
 def pokaz_menu_fullscreen(window):
     window.blit(tlo_fullscreen, (0, 0))
-    tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 10))
-    tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 10))
+    tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
+    tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
     window.blit(tytul_image_fs, tytul_rect)
     for przycisk in przyciski_menu:
         przycisk.wyswietl(window)
