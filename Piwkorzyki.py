@@ -55,6 +55,9 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y, "przycisk_ustawienia3", przycisk_szer, przycisk_wys),
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
+#def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
+    # tutaj dodac img przycisku wyjdz do menu Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_wyjdzdomenu" ,przycisk_szer, przycisk_wys),
+    # tutaj dodac img przycisku zagraj ponownie Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_zagrajponownie" ,przycisk_szer, przycisk_wys)
 
 przycisk_szer = 400
 przycisk_wys = 120
@@ -79,7 +82,7 @@ def pokaz_zasady(window):
         "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki, która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie) i w wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
         "Golem będziemy również nazywać sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
         "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny. ",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu."
+        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
     ]
     for i, line in enumerate(tekst):
         rendered_text = font.render(line, True, (255,255,255))
@@ -100,7 +103,8 @@ def pokaz_zasady_fullscreen(window):
         "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki, która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie) i w wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
         "Golem będziemy również nazywać sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
         "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny. ",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",]
+        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
+        ]
     for i, line in enumerate(tekst):
         rendered_text = font.render(line, True, (255, 243, 13))
         window.blit(rendered_text, (FULLSCREEN_SZER // 4, FULLSCREEN_WYS // 4 + i * 80))
