@@ -63,3 +63,18 @@ json: Do zapisywania i odczytywania danych gry. Możemy użyć go do przechowywa
 
 Podzielimy pracę na dwie pary: Jedna para zajmie się mechanikami gry, druga natomiast opracuje graficzny interfejs aplikacji.
 
+
+
+
+-----------------------------------------------------------------------------------------
+
+AKTUALIZACJA 
+
+
+Plan działania na następne tygodnie jest następujący:
+
+
+Dodamy możliwość wyboru tła,
+Dodamy możliwość wybroru niestandardowego wyjściowego położenia piłki
+
+
