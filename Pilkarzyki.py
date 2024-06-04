@@ -1,23 +1,24 @@
 import pygame
 
-OKNO_SZER = 800
-OKNO_WYS = 800
+OKNO_SZER = 1024
+OKNO_WYS = 900
 FPS = 60
- 
-TŁO = (9, 145, 13)
 
 pygame.init()
 okienko = pygame.display.set_mode((OKNO_SZER, OKNO_WYS), 0, 32)
 pygame.display.set_caption("Piłkarzyki")
 zegarek = pygame.time.Clock()
 
-#tworzenie klasy 'przycisk' do menu.
+
+tlo = pygame.image.load("tlo.png")
+
 class Przycisk:
-    def __init__(self, x_cord, y_cord, file_name):
+    def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
         self.x_cord = x_cord
         self.y_cord = y_cord
         self.button_image = pygame.image.load(f"{file_name}.png")
-        self.hitbox = pygame.Rect(self.x_cord, self.y_cord, self.button_image.get_width(), self.button_image.get_height())
+        self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
+        self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
         
     def klik(self):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
@@ -26,11 +27,10 @@ class Przycisk:
     
     def wyswietl(self, window):
         window.blit(self.button_image, (self.x_cord, self.y_cord))
-     
-#przyciski w menu głównym
-przycisk_graj = Przycisk((OKNO_SZER-366)/2 - 80, 50, "przycisk_graj2")
-przycisk_zasady = Przycisk((OKNO_SZER-366)/2 - 80, 300, "przycisk_zasady2")
-przycisk_wyjdz = Przycisk((OKNO_SZER-366)/2 - 80, 550, "przycisk_wyjdz2")
+        
+przycisk_graj = Przycisk((OKNO_SZER - 200) // 2 -100, 200, "przycisk_graj2", 400, 150)
+przycisk_zasady = Przycisk((OKNO_SZER - 200) // 2 -100, 450, "przycisk_zasady2", 400, 150)
+przycisk_wyjdz = Przycisk((OKNO_SZER - 200) // 2 -100, 700, "przycisk_wyjdz2", 400, 150)
 
 graj = True
 while graj:
@@ -41,8 +41,8 @@ while graj:
     if przycisk_wyjdz.klik():
         graj = False
 
- 
-    okienko.fill(TŁO)
+    # Wyświetl obraz tła
+    okienko.blit(tlo, (0, 0))
  
     przycisk_graj.wyswietl(okienko)
     przycisk_zasady.wyswietl(okienko)
