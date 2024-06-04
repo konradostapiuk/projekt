@@ -1,9 +1,9 @@
-Temat projektu: Paper Soccer (Piłkarzyki na kartce) (wstępna nazwa)
+Temat projektu: "Piwkorzyki"
 
  
 
-Gotowa gra będzie przypominała swoją funkcjonalnością grę “Piłka” z portalu kurnik.pl. Gra będzie trwała do zdobycia 
-określonej liczby goli, użytkownik będzie miał możliwość wyboru tego limitu. Poniżej przedstawiamy wybrane argumenty, które przekonały 
+Gotowa gra będzie przypominała swoją funkcjonalnością grę “Piłkarzyki na kartce”. Gra będzie trwała, aż do zdobycia 
+wybranej liczby goli. Poniżej przedstawiamy wybrane argumenty, które przekonały 
 nas do zrobienia właśnie tej gry
 
 
@@ -59,22 +59,30 @@ pygame.font: Do renderowania tekstu. Jeśli chcemy wyświetlać instrukcje, punk
 random: Do generowania losowych liczb. Możemy użyć go do losowego ustawienia początkowej pozycji piłki, wyboru kierunku ruchu przeciwnika itp.
 
 json: Do zapisywania i odczytywania danych gry. Możemy użyć go do przechowywania stanu gry, punktacji, ustawień itp.
-
-
-Podzielimy pracę na dwie pary: Jedna para zajmie się mechanikami gry, druga natomiast opracuje graficzny interfejs aplikacji.
-
-
-
-
 -----------------------------------------------------------------------------------------
-
-AKTUALIZACJA 
-
-
 Plan działania na następne tygodnie jest następujący:
 
+1. Dokończyć menu:
+- poprawić widoczność tekstu zasad
+- dodać inne ustawienia
+- zwiększyć odległość między przyciskami w trybie fullscreen
+- udoskonalić estetykę UI
 
-Dodamy możliwość wyboru tła,
-Dodamy możliwość wybroru niestandardowego wyjściowego położenia piłki
+2. Stworzyć grę:
+- boisko
+- model piłki
+- grywalny prototyp 
 
+3. Udoskonalić grę:
+- umożliwić wybór długości gry
+- dodać kilka innych modeli boisk oraz piłek do wyboru
+- dodać możliwość wybroru niestandardowego wyjściowego położenia piłki
+
+4. Wersja 2.0 (opcjonalnie - jeśli czas pozwoli):
+- dodać muzykę i efekty dźwiękowe 
+- stworzyć drużyny
+- stworzyć inne tryby gry
+- dodać więcej efektów specjalnych
+- stworzyć więcej modeli graficznych 
+- poprawić wygląd gry
 
