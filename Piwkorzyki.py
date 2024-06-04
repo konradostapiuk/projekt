@@ -14,9 +14,9 @@ zegarek = pygame.time.Clock()
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
 
-tytul_image = pygame.image.load("tytul.png")
-zasady_tytul_image = pygame.image.load("zasady_tytul.png")
-ustawienia_tytul_image = pygame.image.load("ustawienia_tytul.png")
+tytul_image = pygame.image.load("tytul2.png")
+zasady_tytul_image = pygame.image.load("zasady_tytul2.png")
+ustawienia_tytul_image = pygame.image.load("ustawienia_tytul2.png")
 
 class Przycisk:
     def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
