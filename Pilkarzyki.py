@@ -1,7 +1,7 @@
 import pygame
 
 OKNO_SZER = 800
-OKNO_WYS = 700
+OKNO_WYS = 800
 FPS = 60
  
 TŁO = (9, 145, 13)
@@ -28,9 +28,9 @@ class Przycisk:
         window.blit(self.button_image, (self.x_cord, self.y_cord))
      
 #przyciski w menu głównym
-przycisk_graj = Przycisk((OKNO_SZER-366)/2, 47, "przycisk_graj")
-przycisk_zasady = Przycisk((OKNO_SZER-366)/2, 264, "przycisk_zasady")
-przycisk_wyjdz = Przycisk((OKNO_SZER-366)/2, 480, "przycisk_wyjdz")
+przycisk_graj = Przycisk((OKNO_SZER-366)/2 - 80, 50, "przycisk_graj")
+przycisk_zasady = Przycisk((OKNO_SZER-366)/2 - 80, 300, "przycisk_zasady")
+przycisk_wyjdz = Przycisk((OKNO_SZER-366)/2 - 80, 550, "przycisk_wyjdz")
 
 graj = True
 while graj:
