@@ -28,9 +28,9 @@ class Przycisk:
         window.blit(self.button_image, (self.x_cord, self.y_cord))
      
 #przyciski w menu głównym
-przycisk_graj = Przycisk((OKNO_SZER-366)/2 - 80, 50, "przycisk_graj")
-przycisk_zasady = Przycisk((OKNO_SZER-366)/2 - 80, 300, "przycisk_zasady")
-przycisk_wyjdz = Przycisk((OKNO_SZER-366)/2 - 80, 550, "przycisk_wyjdz")
+przycisk_graj = Przycisk((OKNO_SZER-366)/2 - 80, 50, "przycisk_graj2")
+przycisk_zasady = Przycisk((OKNO_SZER-366)/2 - 80, 300, "przycisk_zasady2")
+przycisk_wyjdz = Przycisk((OKNO_SZER-366)/2 - 80, 550, "przycisk_wyjdz2")
 
 graj = True
 while graj:
