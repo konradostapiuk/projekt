@@ -28,8 +28,8 @@ class Przycisk:
     def wyswietl(self, window):
         window.blit(self.button_image, (self.x_cord, self.y_cord))
         
-przycisk_graj = Przycisk((OKNO_SZER - 200) // 2 -100, 200, "przycisk_graj2", 400, 150)
-przycisk_zasady = Przycisk((OKNO_SZER - 200) // 2 -100, 450, "przycisk_zasady2", 400, 150)
+przycisk_graj = Przycisk((OKNO_SZER - 200) // 2 -100, 300, "przycisk_graj2", 400, 150)
+przycisk_zasady = Przycisk((OKNO_SZER - 200) // 2 -100, 500, "przycisk_zasady2", 400, 150)
 przycisk_wyjdz = Przycisk((OKNO_SZER - 200) // 2 -100, 700, "przycisk_wyjdz2", 400, 150)
 
 graj = True
