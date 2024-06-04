@@ -1,0 +1,143 @@
+import sys
+import numpy as np
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt5.QtGui import QPainter, QColor, QFont
+from PyQt5.QtCore import Qt, QPoint
+import pygame
+
+# Inicjalizacja Pygame do obsługi dźwięków
+pygame.init()
+pygame.mixer.init()
+
+# Dźwięki
+#goal_sound = pygame.mixer.Sound('goal.wav')
+#move_sound = pygame.mixer.Sound('move.wav')
+
+# Rozmiary planszy
+BOARD_WIDTH = 10
+BOARD_HEIGHT = 8
+GOAL_WIDTH = 2
+CELL_SIZE = 60
+
+class Game(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+        self.initGame()
+
+    def initUI(self):
+        self.setGeometry(100, 100, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE + 50)
+        self.setWindowTitle('Piłkarzyki')
+        
+        self.reset_button = QPushButton('Reset', self)
+        self.reset_button.clicked.connect(self.resetGame)
+        
+        self.status_label = QLabel('Player 1 turn', self)
+        self.status_label.setAlignment(Qt.AlignCenter)
+        
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.status_label)
+        hbox.addWidget(self.reset_button)
+        
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox)
+        vbox.addStretch(1)
+        
+        self.setLayout(vbox)
+        
+        self.show()
+
+    def initGame(self):
+        self.board = np.zeros((BOARD_HEIGHT, BOARD_WIDTH), dtype=int)
+        self.lines = np.zeros((BOARD_HEIGHT, BOARD_WIDTH, 8), dtype=bool)
+        self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+        self.player_turn = 1
+        self.move_history = []
+        self.update()
+
+    def paintEvent(self, event):
+        qp = QPainter()
+        qp.begin(self)
+        self.drawBoard(qp)
+        qp.end()
+
+    def drawBoard(self, qp):
+        qp.setPen(Qt.black)
+        for row in range(BOARD_HEIGHT):
+            for col in range(BOARD_WIDTH):
+                x = col * CELL_SIZE
+                y = row * CELL_SIZE
+                qp.drawRect(x, y, CELL_SIZE, CELL_SIZE)
+                if self.board[row, col] == 1:
+                    qp.setBrush(Qt.red)
+                    qp.drawEllipse(x + CELL_SIZE // 4, y + CELL_SIZE // 4, CELL_SIZE // 2, CELL_SIZE // 2)
+                elif self.board[row, col] == 2:
+                    qp.setBrush(Qt.blue)
+                    qp.drawEllipse(x + CELL_SIZE // 4, y + CELL_SIZE // 4, CELL_SIZE // 2, CELL_SIZE // 2)
+                
+        qp.setBrush(Qt.green)
+        qp.drawEllipse(self.ball_pos[1] * CELL_SIZE + CELL_SIZE // 4, self.ball_pos[0] * CELL_SIZE + CELL_SIZE // 4, CELL_SIZE // 2, CELL_SIZE // 2)
+        
+        qp.setFont(QFont('Arial', 16))
+        qp.drawText(self.rect(), Qt.AlignTop | Qt.AlignCenter, f"Player {self.player_turn} turn")
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            x = event.pos().x() // CELL_SIZE
+            y = event.pos().y() // CELL_SIZE
+            if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
+                if self.isValidMove((y, x)):
+                    self.moveBall((y, x))
+
+    def isValidMove(self, pos):
+        y, x = pos
+        if abs(self.ball_pos[0] - y) <= 1 and abs(self.ball_pos[1] - x) <= 1:
+            if not self.lines[self.ball_pos[0], self.ball_pos[1], self.getDirection(self.ball_pos, pos)]:
+                return True
+        return False
+
+    def getDirection(self, start, end):
+        dy, dx = end[0] - start[0], end[1] - start[1]
+        if dy == -1 and dx == -1:
+            return 0
+        elif dy == -1 and dx == 0:
+            return 1
+        elif dy == -1 and dx == 1:
+            return 2
+        elif dy == 0 and dx == 1:
+            return 3
+        elif dy == 1 and dx == 1:
+            return 4
+        elif dy == 1 and dx == 0:
+            return 5
+        elif dy == 1 and dx == -1:
+            return 6
+        elif dy == 0 and dx == -1:
+            return 7
+
+    def moveBall(self, pos):
+        pygame.mixer.Sound.play(move_sound)
+        direction = self.getDirection(self.ball_pos, pos)
+        self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
+        self.move_history.append((self.ball_pos, pos))
+        self.ball_pos = pos
+        self.checkGoal()
+        self.update()
+
+    def checkGoal(self):
+        if self.ball_pos[1] in [0, BOARD_WIDTH - 1]:
+            if self.ball_pos[0] in range((BOARD_HEIGHT - GOAL_WIDTH) // 2, (BOARD_HEIGHT + GOAL_WIDTH) // 2):
+                self.status_label.setText(f"Player {self.player_turn} scores!")
+                pygame.mixer.Sound.play(goal_sound)
+                self.resetGame()
+        self.player_turn = 3 - self.player_turn
+
+    def resetGame(self):
+        self.initGame()
+        self.status_label.setText(f"Player {self.player_turn} turn")
+        self.update()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    game = Game()
+    sys.exit(app.exec_())
