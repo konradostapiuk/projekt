@@ -23,7 +23,6 @@ tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
 
 tytul_image = pygame.image.load("tytul2.png")
 
-
 class Przycisk:
     def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
         self.initial_x = x_cord
@@ -74,6 +73,51 @@ full_screen = False
 przyciski_menu = ustawienia_przyciski(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
 przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "fullscreen", 200, 200)
+
+BIALY = (255, 255, 255)
+CZARNY = (0, 0, 0)
+CZERWONY = (255, 0, 0)
+NIEBIESKI = (0, 0, 255)
+ZIELONY = (0, 255, 0)
+
+# Inicjalizacja pozycji startowej
+BOISKO_SZER = 12
+BOISKO_WYS = 12
+KRATKA_ROZMIAR = 64
+srodek = (OKNO_SZER // 2, OKNO_WYS // 2)
+pozycja_pilki = srodek
+poprzednie_pozycje = []
+
+def rysuj_boiska():
+    okienko.fill(BIALY)
+    for x in range(BOISKO_SZER + 1):
+        pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2 - x) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 
+                         (srodek[0] - (BOISKO_SZER // 2 - x) * KRATKA_ROZMIAR, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR))
+    for y in range(BOISKO_WYS + 1):
+        pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2 - y) * KRATKA_ROZMIAR),
+                         (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2 - y) * KRATKA_ROZMIAR))
+        
+    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 
+                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 1)
+    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 
+                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 4)
+    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 
+                     (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
+    pygame.draw.line(okienko, CZARNY, (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 
+                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
+    
+    # Dolna bramka
+    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 
+                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 1)
+    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 
+                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 4)
+    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 
+                     (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
+    pygame.draw.line(okienko, CZARNY, (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 
+                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
+
+def rysuj_pilke(window):
+    pygame.draw.circle(window, NIEBIESKI, pozycja_pilki, KRATKA_ROZMIAR // 6)
 
 current_screen = "menu"
 def wrap_text(text, font, max_width):
@@ -225,7 +269,7 @@ while graj:
         elif zdarzenie.type == pygame.MOUSEBUTTONDOWN:
             if current_screen == "menu":
                 if przyciski_menu[0].klik():
-                    pass  
+                    current_screen = "gra"  
                 elif przyciski_menu[1].klik():
                     current_screen = "zasady"
                 elif przyciski_menu[2].klik():
@@ -266,6 +310,9 @@ while graj:
             pokaz_ustawienia_fullscreen(okienko)
         else:
             pokaz_ustawienia(okienko)
+    elif current_screen == "gra":
+        rysuj_boiska()
+        rysuj_pilke(okienko)
  
     pygame.display.update()
     zegarek.tick(FPS)
