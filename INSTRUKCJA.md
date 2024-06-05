@@ -1,4 +1,4 @@
-Do uruchomienia prototypu potrzebna jest biblioteka pygame. 
+Do uruchomienia prototypu potrzebna jest biblioteka pygame, PyQt5 i NumPy 
 
 Aby włączyć prototyp uruchamiamy skrypt o nazwie Piwkorzyki.py. 
 

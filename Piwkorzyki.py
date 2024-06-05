@@ -32,7 +32,9 @@ class Przycisk:
         self.x_cord = x_cord
         self.y_cord = y_cord
         self.button_image = pygame.image.load(f"{file_name}.png")
+        self.hovered_button_image = pygame.image.load(f"{file_name}_podswietlony.png")
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
+        self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
         self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
         
     def klik(self):
@@ -41,7 +43,10 @@ class Przycisk:
                 return True
     
     def wyswietl(self, window):
-        window.blit(self.button_image, (self.x_cord, self.y_cord))
+        if self.hitbox.collidepoint(pygame.mouse.get_pos()):
+            window.blit(self.hovered_button_image, (self.x_cord, self.y_cord))
+        else:
+            window.blit(self.button_image, (self.x_cord, self.y_cord))
     
     def skaluj(self, new_width, new_height):
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
