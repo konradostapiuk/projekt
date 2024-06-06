@@ -1,4 +1,9 @@
 import pygame
+import sys
+import numpy as np
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt5.QtGui import QPainter, QColor, QFont
+from PyQt5.QtCore import Qt
 
 OKNO_SZER = 1024
 OKNO_WYS = 1024
@@ -79,50 +84,131 @@ przyciski_menu = ustawienia_przyciski(OKNO_SZER, odstepy_y + przycisk_wys, przyc
 
 przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "fullscreen", 200, 200)
 
+# Definiowanie kolorów
 BIALY = (255, 255, 255)
 CZARNY = (0, 0, 0)
 CZERWONY = (255, 0, 0)
 NIEBIESKI = (0, 0, 255)
 ZIELONY = (0, 255, 0)
 
-# Inicjalizacja pozycji startowej
-BOISKO_SZER = 12
-BOISKO_WYS = 12
-KRATKA_ROZMIAR = 64
-srodek = (OKNO_SZER // 2, OKNO_WYS // 2)
-pozycja_pilki = srodek
-poprzednie_pozycje = []
+# Rozmiary planszy
+BOARD_WIDTH = 12
+BOARD_HEIGHT = 12
+CELL_SIZE = 50  # Adjust the cell size
 
-def rysuj_boiska():
-    okienko.fill(BIALY)
-    for x in range(BOISKO_SZER + 1):
-        pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2 - x) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 
-                         (srodek[0] - (BOISKO_SZER // 2 - x) * KRATKA_ROZMIAR, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR))
-    for y in range(BOISKO_WYS + 1):
-        pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2 - y) * KRATKA_ROZMIAR),
-                         (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2 - y) * KRATKA_ROZMIAR))
+# Rozmiary okna
+WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
+WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE + 50  # Adjust window height to include space for buttons
+
+class Game(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+        self.initGame()
+
+    def initUI(self):
+        self.setGeometry(100, 100, WINDOW_WIDTH, WINDOW_HEIGHT)  # Set window size to match the board
+        self.setWindowTitle('Piłkarzyki')
         
-    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 
-                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 1)
-    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 
-                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 4)
-    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 
-                     (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
-    pygame.draw.line(okienko, CZARNY, (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR - KRATKA_ROZMIAR), 
-                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] - (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
-    
-    # Dolna bramka
-    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 
-                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 1)
-    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 
-                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 4)
-    pygame.draw.line(okienko, CZARNY, (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 
-                     (srodek[0] - (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
-    pygame.draw.line(okienko, CZARNY, (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR + KRATKA_ROZMIAR), 
-                     (srodek[0] + (BOISKO_SZER // 2) * KRATKA_ROZMIAR*2/BOISKO_SZER, srodek[1] + (BOISKO_WYS // 2) * KRATKA_ROZMIAR), 4)
+        self.reset_button = QPushButton('Reset', self)
+        self.reset_button.clicked.connect(self.resetGame)
+        
+        self.status_label = QLabel('Player 1 turn', self)
+        self.status_label.setAlignment(Qt.AlignCenter)
+        
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.status_label)
+        hbox.addWidget(self.reset_button)
+        
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox)
+        vbox.addStretch(1)
+        
+        self.setLayout(vbox)
+        
+        self.show()
 
-def rysuj_pilke(window):
-    pygame.draw.circle(window, NIEBIESKI, pozycja_pilki, KRATKA_ROZMIAR // 6)
+    def initGame(self):
+        self.board = np.zeros((BOARD_HEIGHT, BOARD_WIDTH), dtype=int)
+        self.lines = np.zeros((BOARD_HEIGHT, BOARD_WIDTH, 8), dtype=bool)
+        self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+        self.player_turn = 1
+        self.move_history = []
+        self.update()
+
+    def paintEvent(self, event):
+        qp = QPainter()
+        qp.begin(self)
+        self.drawBoard(qp)
+        qp.end()
+
+    def drawBoard(self, qp):
+        qp.setPen(Qt.black)
+        for row in range(BOARD_HEIGHT):
+            for col in range(BOARD_WIDTH):
+                x = col * CELL_SIZE
+                y = row * CELL_SIZE
+                qp.drawRect(x, y, CELL_SIZE, CELL_SIZE)
+                
+        qp.setBrush(Qt.green)
+        qp.drawEllipse(self.ball_pos[1] * CELL_SIZE + CELL_SIZE // 4, self.ball_pos[0] * CELL_SIZE + CELL_SIZE // 4, CELL_SIZE // 2, CELL_SIZE // 2)
+        
+        qp.setFont(QFont('Arial', 16))
+        qp.drawText(self.rect(), Qt.AlignTop | Qt.AlignCenter, f"Player {self.player_turn} turn")
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            x = event.pos().x() // CELL_SIZE
+            y = event.pos().y() // CELL_SIZE
+            if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
+                if self.isValidMove((y, x)):
+                    self.moveBall((y, x))
+
+    def isValidMove(self, pos):
+        y, x = pos
+        if abs(self.ball_pos[0] - y) <= 1 and abs(self.ball_pos[1] - x) <= 1:
+            if not self.lines[self.ball_pos[0], self.ball_pos[1], self.getDirection(self.ball_pos, pos)].any():
+                return True
+        return False
+
+    def getDirection(self, start, end):
+        dy, dx = end[0] - start[0], end[1] - start[1]
+        if dy == -1 and dx == -1:
+            return 0
+        elif dy == -1 and dx == 0:
+            return 1
+        elif dy == -1 and dx == 1:
+            return 2
+        elif dy == 0 and dx == 1:
+            return 3
+        elif dy == 1 and dx == 1:
+            return 4
+        elif dy == 1 and dx == 0:
+            return 5
+        elif dy == 1 and dx == -1:
+            return 6
+        elif dy == 0 and dx == -1:
+            return 7
+
+    def moveBall(self, pos):
+        direction = self.getDirection(self.ball_pos, pos)
+        self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
+        self.move_history.append((self.ball_pos, pos))
+        self.ball_pos = pos
+        self.checkGoal()
+        self.update()
+
+    def checkGoal(self):
+        if self.ball_pos[1] in [0, BOARD_WIDTH - 1]:
+            if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
+                self.status_label.setText(f"Player {self.player_turn} scores!")
+                self.resetGame()
+        self.player_turn = 3 - self.player_turn
+
+    def resetGame(self):
+        self.initGame()
+        self.status_label.setText(f"Player {self.player_turn} turn")
+        self.update()
 
 current_screen = "menu"
 def wrap_text(text, font, max_width):
@@ -316,8 +402,7 @@ while graj:
         else:
             pokaz_ustawienia(okienko)
     elif current_screen == "gra":
-        rysuj_boiska()
-        rysuj_pilke(okienko)
+        break
  
     pygame.display.update()
     zegarek.tick(FPS)
