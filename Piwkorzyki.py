@@ -89,9 +89,9 @@ NIEBIESKI = (0, 0, 255)
 ZIELONY = (0, 255, 0)
 
 # Rozmiary planszy
-BOARD_WIDTH = 12
-BOARD_HEIGHT = 12
-CELL_SIZE = 64
+BOARD_WIDTH = 15
+BOARD_HEIGHT = 11
+CELL_SIZE = 50
 
 # Rozmiary okna
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
@@ -100,7 +100,7 @@ WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + 50))
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT+50))
         pygame.display.set_caption('Piłkarzyki')
         self.clock = pygame.time.Clock()
         self.initGame()
@@ -110,13 +110,15 @@ class Game:
         self.lines = np.zeros((BOARD_HEIGHT, BOARD_WIDTH, 8), dtype=bool)
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.player_turn = 1
-
+        self.highlighted_cells = [(BOARD_HEIGHT//2-1, BOARD_WIDTH-1), (BOARD_HEIGHT//2,BOARD_WIDTH-1),(BOARD_HEIGHT//2-1, 0),(BOARD_HEIGHT//2, 0)]
     def drawBoard(self):
         self.screen.fill(BIALY)
         for row in range(BOARD_HEIGHT):
             for col in range(BOARD_WIDTH):
-                pygame.draw.rect(self.screen, CZARNY, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE), 1)
-
+                if (row, col) in self.highlighted_cells:
+                    pygame.draw.rect(self.screen, NIEBIESKI, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+                else:
+                    pygame.draw.rect(self.screen, CZARNY, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE), 1)
         pygame.draw.circle(self.screen, ZIELONY, (self.ball_pos[1] * CELL_SIZE + CELL_SIZE // 2, self.ball_pos[0] * CELL_SIZE + CELL_SIZE // 2), CELL_SIZE // 4)
 
         font = pygame.font.SysFont(None, 30)
