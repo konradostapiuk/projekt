@@ -1,9 +1,6 @@
 import pygame
 import sys
 import numpy as np
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
-from PyQt5.QtGui import QPainter, QColor, QFont
-from PyQt5.QtCore import Qt
 
 OKNO_SZER = 1024
 OKNO_WYS = 1024
@@ -94,80 +91,44 @@ ZIELONY = (0, 255, 0)
 # Rozmiary planszy
 BOARD_WIDTH = 12
 BOARD_HEIGHT = 12
-CELL_SIZE = 50  # Adjust the cell size
+CELL_SIZE = 64
 
 # Rozmiary okna
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
-WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE + 50  # Adjust window height to include space for buttons
+WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
 
-class Game(QWidget):
+class Game:
     def __init__(self):
-        super().__init__()
-        self.initUI()
+        pygame.init()
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + 50))
+        pygame.display.set_caption('Piłkarzyki')
+        self.clock = pygame.time.Clock()
         self.initGame()
-
-    def initUI(self):
-        self.setGeometry(100, 100, WINDOW_WIDTH, WINDOW_HEIGHT)  # Set window size to match the board
-        self.setWindowTitle('Piłkarzyki')
-        
-        self.reset_button = QPushButton('Reset', self)
-        self.reset_button.clicked.connect(self.resetGame)
-        
-        self.status_label = QLabel('Player 1 turn', self)
-        self.status_label.setAlignment(Qt.AlignCenter)
-        
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.status_label)
-        hbox.addWidget(self.reset_button)
-        
-        vbox = QVBoxLayout()
-        vbox.addLayout(hbox)
-        vbox.addStretch(1)
-        
-        self.setLayout(vbox)
-        
-        self.show()
 
     def initGame(self):
         self.board = np.zeros((BOARD_HEIGHT, BOARD_WIDTH), dtype=int)
         self.lines = np.zeros((BOARD_HEIGHT, BOARD_WIDTH, 8), dtype=bool)
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.player_turn = 1
-        self.move_history = []
-        self.update()
 
-    def paintEvent(self, event):
-        qp = QPainter()
-        qp.begin(self)
-        self.drawBoard(qp)
-        qp.end()
-
-    def drawBoard(self, qp):
-        qp.setPen(Qt.black)
+    def drawBoard(self):
+        self.screen.fill(BIALY)
         for row in range(BOARD_HEIGHT):
             for col in range(BOARD_WIDTH):
-                x = col * CELL_SIZE
-                y = row * CELL_SIZE
-                qp.drawRect(x, y, CELL_SIZE, CELL_SIZE)
-                
-        qp.setBrush(Qt.green)
-        qp.drawEllipse(self.ball_pos[1] * CELL_SIZE + CELL_SIZE // 4, self.ball_pos[0] * CELL_SIZE + CELL_SIZE // 4, CELL_SIZE // 2, CELL_SIZE // 2)
-        
-        qp.setFont(QFont('Arial', 16))
-        qp.drawText(self.rect(), Qt.AlignTop | Qt.AlignCenter, f"Player {self.player_turn} turn")
+                pygame.draw.rect(self.screen, CZARNY, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE), 1)
 
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            x = event.pos().x() // CELL_SIZE
-            y = event.pos().y() // CELL_SIZE
-            if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
-                if self.isValidMove((y, x)):
-                    self.moveBall((y, x))
+        pygame.draw.circle(self.screen, ZIELONY, (self.ball_pos[1] * CELL_SIZE + CELL_SIZE // 2, self.ball_pos[0] * CELL_SIZE + CELL_SIZE // 2), CELL_SIZE // 4)
+
+        font = pygame.font.SysFont(None, 30)
+        text = font.render(f"Player {self.player_turn} turn", True, CZARNY)
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT + 25))
+        self.screen.blit(text, text_rect)
 
     def isValidMove(self, pos):
         y, x = pos
+        direction = self.getDirection(self.ball_pos, pos)
         if abs(self.ball_pos[0] - y) <= 1 and abs(self.ball_pos[1] - x) <= 1:
-            if not self.lines[self.ball_pos[0], self.ball_pos[1], self.getDirection(self.ball_pos, pos)].any():
+            if not self.lines[self.ball_pos[0], self.ball_pos[1], direction].any():
                 return True
         return False
 
@@ -193,22 +154,38 @@ class Game(QWidget):
     def moveBall(self, pos):
         direction = self.getDirection(self.ball_pos, pos)
         self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
-        self.move_history.append((self.ball_pos, pos))
         self.ball_pos = pos
         self.checkGoal()
-        self.update()
 
     def checkGoal(self):
         if self.ball_pos[1] in [0, BOARD_WIDTH - 1]:
             if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
-                self.status_label.setText(f"Player {self.player_turn} scores!")
+                print(f"Player {self.player_turn} scores!")
                 self.resetGame()
         self.player_turn = 3 - self.player_turn
 
     def resetGame(self):
         self.initGame()
-        self.status_label.setText(f"Player {self.player_turn} turn")
-        self.update()
+
+    def run(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        x = event.pos[0] // CELL_SIZE
+                        y = event.pos[1] // CELL_SIZE
+                        if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
+                            if self.isValidMove((y, x)):
+                                self.moveBall((y, x))
+
+            self.drawBoard()
+            pygame.display.update()
+            self.clock.tick(60)
+
+        pygame.quit()
 
 current_screen = "menu"
 def wrap_text(text, font, max_width):
@@ -402,7 +379,8 @@ while graj:
         else:
             pokaz_ustawienia(okienko)
     elif current_screen == "gra":
-        break
+        game = Game()
+        game.run()
  
     pygame.display.update()
     zegarek.tick(FPS)
