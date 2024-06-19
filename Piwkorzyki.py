@@ -1,3 +1,4 @@
+
 import pygame
 import sys
 import numpy as np
@@ -21,8 +22,8 @@ tlo_zasady = pygame.image.load("tlo_zasady3.png")
 tlo_zasady2 = pygame.image.load("tlo_zasady2.png")
 tlo_ustawienia = pygame.image.load("tlo_ustawienia.png")
 tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
-
-
+tlo_pauza = pygame.image.load("tlo_pauza.jpg")
+tlo_pauza = pygame.transform.scale(tlo_pauza, (800, 600))
 tytul_image = pygame.image.load("tytul2.png")
 
 class Przycisk:
@@ -67,9 +68,11 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y, "przycisk_ustawienia3", przycisk_szer, przycisk_wys),
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
-#def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
-    # tutaj dodac img przycisku wyjdz do menu Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_wyjdzdomenu" ,przycisk_szer, przycisk_wys),
-    # tutaj dodac img przycisku zagraj ponownie Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_zagrajponownie" ,przycisk_szer, przycisk_wys)
+    #def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
+    # tutaj dodac img przycisku wyjdz do menu Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_wyjdzdomenu",
+    # przycisk_szer, przycisk_wys),
+    # tutaj dodac img przycisku zagraj ponownie Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y,
+    # "przycisk_zagrajponownie" ,przycisk_szer, przycisk_wys)
 
 przycisk_szer = 400
 przycisk_wys = 120
@@ -104,13 +107,15 @@ class Game:
         pygame.display.set_caption('Piłkarzyki')
         self.clock = pygame.time.Clock()
         self.initGame()
-
+        self.paused = False
+        
     def initGame(self):
         self.board = np.zeros((BOARD_HEIGHT, BOARD_WIDTH), dtype=int)
         self.lines = np.zeros((BOARD_HEIGHT, BOARD_WIDTH, 8), dtype=bool)
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.player_turn = 1
         self.highlighted_cells = [(BOARD_HEIGHT//2-1, BOARD_WIDTH-1), (BOARD_HEIGHT//2,BOARD_WIDTH-1),(BOARD_HEIGHT//2-1, 0),(BOARD_HEIGHT//2, 0)]
+    
     def drawBoard(self):
         self.screen.fill(BIALY)
         for row in range(BOARD_HEIGHT):
@@ -125,6 +130,18 @@ class Game:
         text = font.render(f"Player {self.player_turn} turn", True, CZARNY)
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT + 25))
         self.screen.blit(text, text_rect)
+
+    def MenuPauza(self):
+        self.screen.blit(tlo_pauza, (0, 0))
+        font = pygame.font.Font(None, 150)
+        font2 = pygame.font.Font(moja_czcionka, 30)
+        text = font.render("PAUZA", True, CZARNY)
+        text2 = font2.render("Naciśnij klawisz 'ESC', aby powrócić do gry.", True, CZARNY)
+        text_rect = text.get_rect(midtop=(WINDOW_WIDTH // 2, 50))
+        text2_rect = text2.get_rect(midbottom=(WINDOW_WIDTH // 2, WINDOW_HEIGHT ))
+        self.screen.blit(text, text_rect)
+        self.screen.blit(text2, text2_rect)
+        pygame.display.update()
 
     def isValidMove(self, pos):
         y, x = pos
@@ -175,21 +192,29 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        x = event.pos[0] // CELL_SIZE
-                        y = event.pos[1] // CELL_SIZE
-                        if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
-                            if self.isValidMove((y, x)):
-                                self.moveBall((y, x))
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.paused = not self.paused
 
-            self.drawBoard()
-            pygame.display.update()
-            self.clock.tick(60)
+                if not self.paused:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1:
+                            x = event.pos[0] // CELL_SIZE
+                            y = event.pos[1] // CELL_SIZE
+                            if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
+                                if self.isValidMove((y, x)):
+                                    self.moveBall((y, x))
+
+            if self.paused:
+                self.MenuPauza()
+            else:
+                self.drawBoard()
+                pygame.display.update()
+                self.clock.tick(60)
 
         pygame.quit()
-
 current_screen = "menu"
+
 def wrap_text(text, font, max_width):
     words = text.split(' ')
     lines = []
