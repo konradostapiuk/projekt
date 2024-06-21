@@ -18,8 +18,7 @@ moja_czcionka = "pricedown bl.otf"
 
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
-tlo_zasady = pygame.image.load("tlo_zasady3.png")
-tlo_zasady2 = pygame.image.load("tlo_zasady2.png")
+tlo_zasady = pygame.image.load("tlo_zasady2.png")
 tlo_ustawienia = pygame.image.load("tlo_ustawienia.png")
 tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
 tlo_pauza = pygame.image.load("tlo_pauza.jpg")
@@ -308,7 +307,7 @@ def pokaz_zasady(window):
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 def pokaz_zasady_fullscreen(window):
-    window.blit(tlo_zasady2, (0, 0))
+    window.blit(tlo_zasady, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     zasady_tytul_text = "ZASADY:"
     zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255)) 
