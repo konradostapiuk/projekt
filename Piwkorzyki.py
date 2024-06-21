@@ -285,10 +285,10 @@ def pokaz_zasady(window):
     
     font = pygame.font.Font(moja_czcionka, 24)  
     tekst = [
-        "Gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek z bramkami o szerokości dwóch kratek kształt boiska przedstawiono na ilustracji poniżej",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki, która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie) i w wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem będziemy również nazywać sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
+        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek, z bramkami o szerokości dwóch kratek",
+        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
+        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
+        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
         "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
     ]
     
@@ -316,10 +316,10 @@ def pokaz_zasady_fullscreen(window):
 
     font = pygame.font.Font(moja_czcionka, 35)  
     tekst = [
-        "Gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek z bramkami o szerokości dwóch kratek kształt boiska przedstawiono na ilustracji poniżej",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki, która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie) i w wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem będziemy również nazywać sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać: jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
+        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek, z bramkami o szerokości dwóch kratek",
+        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
+        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
+        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
         "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
     ]
 
