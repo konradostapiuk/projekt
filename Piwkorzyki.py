@@ -25,6 +25,7 @@ tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
 tlo_pauza = pygame.image.load("tlo_pauza.jpg")
 tlo_pauza = pygame.transform.scale(tlo_pauza, (800, 600))
 tytul_image = pygame.image.load("tytul2.png")
+pilka_image = pygame.image.load("pilka.jpg")
 
 class Przycisk:
     def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
@@ -100,6 +101,8 @@ CELL_SIZE = 50
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
 WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
 
+GOALS_TO_WIN = 3
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -108,6 +111,13 @@ class Game:
         self.clock = pygame.time.Clock()
         self.initGame()
         self.paused = False
+        self.game_over = False
+        self.load_images()
+        self.resetGame()
+
+    def load_images(self):
+        self.pilka_image = pygame.image.load("pilka.jpg")
+        self.pilka_image = pygame.transform.scale(self.pilka_image, (CELL_SIZE, CELL_SIZE))
         
     def initGame(self):
         self.board = np.zeros((BOARD_HEIGHT, BOARD_WIDTH), dtype=int)
@@ -115,6 +125,7 @@ class Game:
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.player_turn = 1
         self.highlighted_cells = [(BOARD_HEIGHT//2-1, BOARD_WIDTH-1), (BOARD_HEIGHT//2,BOARD_WIDTH-1),(BOARD_HEIGHT//2-1, 0),(BOARD_HEIGHT//2, 0)]
+        self.scores = {1: 0, 2: 0}
     
     def drawBoard(self):
         self.screen.fill(BIALY)
@@ -124,7 +135,6 @@ class Game:
                     pygame.draw.rect(self.screen, NIEBIESKI, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
                 else:
                     pygame.draw.rect(self.screen, CZARNY, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE), 1)
-        pygame.draw.circle(self.screen, ZIELONY, (self.ball_pos[1] * CELL_SIZE + CELL_SIZE // 2, self.ball_pos[0] * CELL_SIZE + CELL_SIZE // 2), CELL_SIZE // 4)
 
         font = pygame.font.SysFont(None, 30)
         text = font.render(f"Player {self.player_turn} turn", True, CZARNY)
@@ -175,16 +185,44 @@ class Game:
         self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
         self.ball_pos = pos
         self.checkGoal()
+        if self.ball_pos[1] in [0, BOARD_WIDTH - 1] and self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
+            self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
 
     def checkGoal(self):
         if self.ball_pos[1] in [0, BOARD_WIDTH - 1]:
             if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
                 print(f"Player {self.player_turn} scores!")
-                self.resetGame()
+                self.scores[self.player_turn] += 1
+                if self.scores[self.player_turn] >= GOALS_TO_WIN:
+                    self.endGame(self.player_turn)
+                    return
         self.player_turn = 3 - self.player_turn
 
     def resetGame(self):
         self.initGame()
+        self.game_over = False
+    
+    def endGame(self, winner):
+        self.game_over = True
+        self.scores = {1: 0, 2: 0}  # Reset scores
+        font = pygame.font.Font(None, 150)
+        font2 = pygame.font.Font(None, 50)
+        text = font.render("KONIEC GRY", True, CZARNY)
+        text2 = font2.render(f"Wygrywa Gracz {winner}", True, CZARNY)
+        text3 = font2.render("Naciśnij 'R', aby zagrać ponownie", True, CZARNY)
+        text4 = font2.render("Naciśnij 'Q', aby zakończyć", True, CZARNY)
+
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 4))
+        text2_rect = text2.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        text3_rect = text3.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 3 // 4))
+        text4_rect = text4.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8))
+
+        self.screen.fill(BIALY)
+        self.screen.blit(text, text_rect)
+        self.screen.blit(text2, text2_rect)
+        self.screen.blit(text3, text3_rect)
+        self.screen.blit(text4, text4_rect)
+        pygame.display.update()
 
     def run(self):
         running = True
@@ -195,8 +233,13 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.paused = not self.paused
+                    elif event.key == pygame.K_r and self.game_over:
+                        self.resetGame()
+                        self.game_over = False
+                    elif event.key == pygame.K_q and self.game_over:
+                        running = False
 
-                if not self.paused:
+                if not self.paused and not self.game_over:
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 1:
                             x = event.pos[0] // CELL_SIZE
@@ -207,11 +250,15 @@ class Game:
 
             if self.paused:
                 self.MenuPauza()
-            else:
+            elif not self.game_over:
                 self.drawBoard()
-                pygame.display.update()
-                self.clock.tick(60)
-
+                ball_screen_pos = (
+                    self.ball_pos[1] * CELL_SIZE,  # x
+                    self.ball_pos[0] * CELL_SIZE   # y
+                    )
+                self.screen.blit(self.pilka_image, ball_screen_pos)
+            pygame.display.update()
+            self.clock.tick(30)
         pygame.quit()
 current_screen = "menu"
 
