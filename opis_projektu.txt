@@ -63,15 +63,15 @@ json: Do zapisywania i odczytywania danych gry. Możemy użyć go do przechowywa
 Plan działania na następne tygodnie jest następujący:
 
 1. Dokończyć menu:
-- poprawić widoczność tekstu zasad
+- poprawić widoczność tekstu zasad                                            ZROBIONE
 - dodać inne ustawienia
-- zwiększyć odległość między przyciskami w trybie fullscreen
-- udoskonalić estetykę UI
+- zwiększyć odległość między przyciskami w trybie fullscreen                  ZROBIONE
+- udoskonalić estetykę UI                                                     W TRAKCIE
 
 2. Stworzyć grę:
-- boisko
-- model piłki
-- grywalny prototyp 
+- boisko                                                                      W TRAKCIE
+- model piłki                                                                 ZROBIONE
+- grywalny prototyp                                                           ZROBIONE
 
 3. Udoskonalić grę:
 - umożliwić wybór długości gry
