@@ -64,9 +64,9 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 150
     return [
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_graj3", przycisk_szer, przycisk_wys),
-        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + odstep_y, "przycisk_zasady3", przycisk_szer, przycisk_wys),
-        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y, "przycisk_ustawienia3", przycisk_szer, przycisk_wys),
-        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + odstep_y+35, "przycisk_zasady3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y+70, "przycisk_ustawienia3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y+105, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
     #def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     # tutaj dodac img przycisku wyjdz do menu Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_wyjdzdomenu",
@@ -376,7 +376,7 @@ def pokaz_ustawienia_fullscreen(window):
         rendered_text = font.render(line, True, (255, 255, 255))
         window.blit(rendered_text, (FULLSCREEN_SZER // 4, FULLSCREEN_WYS // 4 + i * 80))
     
-    przycisk_pelny_ekran.skaluj(300, 300)
+    przycisk_pelny_ekran.skaluj(300,300)
     przycisk_pelny_ekran.x_cord = (FULLSCREEN_SZER - 300) // 2
     przycisk_pelny_ekran.y_cord = (FULLSCREEN_WYS - 300) // 2
     przycisk_pelny_ekran.wyswietl(window)
