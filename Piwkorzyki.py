@@ -25,6 +25,8 @@ tlo_pauza = pygame.image.load("tlo_pauza.jpg")
 tlo_pauza = pygame.transform.scale(tlo_pauza, (800, 600))
 tytul_image = pygame.image.load("tytul2.png")
 pilka_image = pygame.image.load("pilka.jpg")
+tlo_koniec = pygame.image.load("piwa.jpg")
+tlo_koniec = pygame.transform.scale(tlo_koniec, (400, 300))
 
 class Przycisk:
     def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
@@ -68,6 +70,14 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y+70, "przycisk_ustawienia3", przycisk_szer, przycisk_wys),
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y+105, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
+
+def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
+    przyciski_y = tytul_y + 30
+    return [
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_zasady3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + odstep_y+35, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
+    ]
+
     #def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     # tutaj dodac img przycisku wyjdz do menu Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_wyjdzdomenu",
     # przycisk_szer, przycisk_wys),
@@ -83,6 +93,8 @@ full_screen = False
 przyciski_menu = ustawienia_przyciski(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
 przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "fullscreen", 200, 200)
+
+przyciski_pauza = ustawienia_przyciski_pauza(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
 # Definiowanie kolorów
 BIALY = (255, 255, 255)
@@ -100,7 +112,7 @@ CELL_SIZE = 50
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
 WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
 
-GOALS_TO_WIN = 3
+GOALS_TO_WIN = 1
 
 class Game:
     def __init__(self):
@@ -150,8 +162,10 @@ class Game:
         text2_rect = text2.get_rect(midbottom=(WINDOW_WIDTH // 2, WINDOW_HEIGHT ))
         self.screen.blit(text, text_rect)
         self.screen.blit(text2, text2_rect)
+        for przycisk in przyciski_pauza:
+            przycisk.wyswietl(self.screen)
         pygame.display.update()
-
+        
     def isValidMove(self, pos):
         y, x = pos
         direction = self.getDirection(self.ball_pos, pos)
@@ -202,21 +216,22 @@ class Game:
         self.game_over = False
     
     def endGame(self, winner):
+        self.screen.fill(CZARNY)
+        self.screen.blit(tlo_koniec, (175, 120))
         self.game_over = True
         self.scores = {1: 0, 2: 0}  # Reset scores
         font = pygame.font.Font(None, 150)
         font2 = pygame.font.Font(None, 50)
-        text = font.render("KONIEC GRY", True, CZARNY)
-        text2 = font2.render(f"Wygrywa Gracz {winner}", True, CZARNY)
-        text3 = font2.render("Naciśnij 'R', aby zagrać ponownie", True, CZARNY)
-        text4 = font2.render("Naciśnij 'Q', aby zakończyć", True, CZARNY)
+        text = font.render("KONIEC GRY!", True, BIALY)
+        text2 = font2.render(f"Gracz {winner} dostaje piwo!", True, BIALY)
+        text3 = font2.render("Naciśnij 'R', aby zagrać ponownie.", True, BIALY)
+        text4 = font2.render("Naciśnij 'Q', aby zakończyć.", True, BIALY)
 
-        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 4))
-        text2_rect = text2.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
-        text3_rect = text3.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 3 // 4))
-        text4_rect = text4.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8))
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 8))
+        text2_rect = text2.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT *2 // 3 + 20))
+        text3_rect = text3.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8))
+        text4_rect = text4.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8 + 60))
 
-        self.screen.fill(BIALY)
         self.screen.blit(text, text_rect)
         self.screen.blit(text2, text2_rect)
         self.screen.blit(text3, text3_rect)
@@ -225,6 +240,7 @@ class Game:
 
     def run(self):
         running = True
+        current_screen = "menu"
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -246,16 +262,23 @@ class Game:
                             if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
                                 if self.isValidMove((y, x)):
                                     self.moveBall((y, x))
-
+                                    
             if self.paused:
                 self.MenuPauza()
+                if przyciski_pauza[0].klik():
+                    current_screen == "zasady"
+                    pokaz_zasady(okienko)
+                elif przyciski_pauza[1].klik():
+                    running = False
+
             elif not self.game_over:
                 self.drawBoard()
                 ball_screen_pos = (
                     self.ball_pos[1] * CELL_SIZE,  # x
                     self.ball_pos[0] * CELL_SIZE   # y
-                    )
+                )
                 self.screen.blit(self.pilka_image, ball_screen_pos)
+
             pygame.display.update()
             self.clock.tick(30)
         pygame.quit()
