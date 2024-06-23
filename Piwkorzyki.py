@@ -1,7 +1,7 @@
-
 import pygame
 import sys
 import numpy as np
+from pygame.locals import *
 
 OKNO_SZER = 1024
 OKNO_WYS = 1024
@@ -15,6 +15,8 @@ pygame.display.set_caption("Piwkorzyki")
 zegarek = pygame.time.Clock()
 
 moja_czcionka = "pricedown bl.otf"
+font = pygame.font.Font(None, 74)
+small_font = pygame.font.Font(None, 36)
 
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
@@ -28,8 +30,37 @@ pilka_image = pygame.image.load("pilka.jpg")
 tlo_koniec = pygame.image.load("piwa.jpg")
 tlo_koniec = pygame.transform.scale(tlo_koniec, (400, 300))
 
+black = (0, 0, 0)
+white = (255, 255, 255)
+
+def intro():
+    intro_active = True
+    while intro_active:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                intro_active = False
+
+        okienko.fill(black)
+        intro_text = font.render('Intro Screen', True, white)
+        text_rect = intro_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS / 2))
+        okienko.blit(intro_text, text_rect)
+
+        skip_text = small_font.render('Kliknij dwukrotnie aby pominąć', True, white)
+        skip_text_rect = skip_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 50))
+        okienko.blit(skip_text, skip_text_rect)
+
+        pygame.display.update()
+        
+        
+        
 class Przycisk:
     def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
+
+    
+    
         self.initial_x = x_cord
         self.initial_y = y_cord
         self.initial_width = new_width
@@ -96,6 +127,162 @@ przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "f
 
 przyciski_pauza = ustawienia_przyciski_pauza(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
+
+def pokaz_menu(window):
+    window.blit(tlo, (0, 0))
+    tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, tytul_y))
+    window.blit(tytul_image, tytul_rect)
+    for przycisk in przyciski_menu:
+        przycisk.wyswietl(window)
+
+def main():
+    intro()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == MOUSEBUTTONDOWN:
+                running = False       
+        pokaz_menu(okienko)
+
+
+if __name__ == '__main__':
+    main()
+    
+def wrap_text(text, font, max_width):
+    words = text.split(' ')
+    lines = []
+    current_line = ""
+    for word in words:
+        test_line = current_line + word + " "
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word + " "
+    lines.append(current_line)
+    return lines
+
+def pokaz_zasady(window):
+    window.blit(tlo_zasady, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 100)
+    zasady_tytul_text = "ZASADY:"
+    zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255))  
+    zasady_tytul_rect = zasady_tytul.get_rect(center=(OKNO_SZER // 2, 80))
+    window.blit(zasady_tytul, zasady_tytul_rect)
+    
+    font = pygame.font.Font(moja_czcionka, 24)  
+    tekst = [
+        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
+        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
+        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
+        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
+        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
+    ]
+    
+    y_offset = 200
+    line_height = font.get_linesize()  
+    paragraph_spacing = 40 
+    for paragraph in tekst:
+        lines = wrap_text(paragraph, font, OKNO_SZER - 100)
+        for line in lines:
+            rendered_text = font.render(line, True, (255, 255, 255))  
+            window.blit(rendered_text, (OKNO_SZER // 2 - rendered_text.get_width() // 2, y_offset))
+            y_offset += line_height
+        y_offset += paragraph_spacing  
+    
+    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
+    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
+
+def pokaz_zasady_fullscreen(window):
+    window.blit(tlo_zasady, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 150)
+    zasady_tytul_text = "ZASADY:"
+    zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255)) 
+    zasady_tytul_rect = zasady_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
+    window.blit(zasady_tytul, zasady_tytul_rect)
+
+    font = pygame.font.Font(moja_czcionka, 35)  
+    tekst = [
+        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
+        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
+        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
+        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
+        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
+    ]
+
+    y_offset = FULLSCREEN_WYS // 5
+    line_height = font.get_linesize()  
+    paragraph_spacing = 50  
+    for paragraph in tekst:
+        lines = wrap_text(paragraph, font, FULLSCREEN_SZER - 100)
+        for line in lines:
+            rendered_text = font.render(line, True, (255, 255, 255))  
+            window.blit(rendered_text, (FULLSCREEN_SZER // 2 - rendered_text.get_width() // 2, y_offset))
+            y_offset += line_height
+        y_offset += paragraph_spacing  
+    
+    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
+    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
+
+def pokaz_ustawienia(window):
+    window.blit(tlo_ustawienia, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 100)
+    ustawienia_tytul_text = "USTAWIENIA:"
+    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
+    ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(OKNO_SZER // 2, 80))
+    window.blit(ustawienia_tytul, ustawienia_tytul_rect)
+    font = pygame.font.Font(moja_czcionka, 45)
+    tekst = [
+        ""
+    ]
+    for i, line in enumerate(tekst):
+        rendered_text = font.render(line, True, (255, 255, 255))
+        window.blit(rendered_text, (50, 150 + i * 40))
+    
+    przycisk_pelny_ekran.wyswietl(window)
+    
+    napis = font.render("FULLSCREEN", True, (255, 255, 255))
+    window.blit(napis, ((OKNO_SZER - napis.get_width()) // 2, (OKNO_WYS) // 2 - 90))
+
+    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
+    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
+
+def pokaz_ustawienia_fullscreen(window):
+    window.blit(tlo_ustawienia2, (0, 0))
+    tytul_font = pygame.font.Font(moja_czcionka, 150)
+    ustawienia_tytul_text = "USTAWIENIA:"
+    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
+    ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
+    window.blit(ustawienia_tytul, ustawienia_tytul_rect)
+    
+    font = pygame.font.Font(moja_czcionka, 72)
+    tekst = [
+             
+             ""]
+    for i, line in enumerate(tekst):
+        rendered_text = font.render(line, True, (255, 255, 255))
+        window.blit(rendered_text, (FULLSCREEN_SZER // 4, FULLSCREEN_WYS // 4 + i * 80))
+    
+    przycisk_pelny_ekran.skaluj(300,300)
+    przycisk_pelny_ekran.x_cord = (FULLSCREEN_SZER - 300) // 2
+    przycisk_pelny_ekran.y_cord = (FULLSCREEN_WYS - 300) // 2
+    przycisk_pelny_ekran.wyswietl(window)
+
+    napis = font.render("FULLSCREEN", True, (255, 255, 255))
+    window.blit(napis, ((FULLSCREEN_SZER - napis.get_width()) // 2, (FULLSCREEN_WYS) // 2 - 250))
+
+    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
+    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 150))
+
+
+def pokaz_menu_fullscreen(window):
+    window.blit(tlo_fullscreen, (0, 0))
+    tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
+    tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
+    window.blit(tytul_image_fs, tytul_rect)
+    for przycisk in przyciski_menu:
+        przycisk.wyswietl(window)
+    
 # Definiowanie kolorów
 BIALY = (255, 255, 255)
 CZARNY = (0, 0, 0)
@@ -105,8 +292,8 @@ ZIELONY = (0, 255, 0)
 
 # Rozmiary planszy
 BOARD_WIDTH = 15
-BOARD_HEIGHT = 11
-CELL_SIZE = 50
+BOARD_HEIGHT = 10
+CELL_SIZE = 60
 
 # Rozmiary okna
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
@@ -295,148 +482,7 @@ class Game:
             self.clock.tick(30)
         pygame.quit()
 current_screen = "menu"
-
-def wrap_text(text, font, max_width):
-    words = text.split(' ')
-    lines = []
-    current_line = ""
-    for word in words:
-        test_line = current_line + word + " "
-        if font.size(test_line)[0] <= max_width:
-            current_line = test_line
-        else:
-            lines.append(current_line)
-            current_line = word + " "
-    lines.append(current_line)
-    return lines
-
-def pokaz_zasady(window):
-    window.blit(tlo_zasady, (0, 0))
-    tytul_font = pygame.font.Font(moja_czcionka, 100)
-    zasady_tytul_text = "ZASADY:"
-    zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255))  
-    zasady_tytul_rect = zasady_tytul.get_rect(center=(OKNO_SZER // 2, 80))
-    window.blit(zasady_tytul, zasady_tytul_rect)
-    
-    font = pygame.font.Font(moja_czcionka, 24)  
-    tekst = [
-        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek, z bramkami o szerokości dwóch kratek",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
-    ]
-    
-    y_offset = 200
-    line_height = font.get_linesize()  
-    paragraph_spacing = 40 
-    for paragraph in tekst:
-        lines = wrap_text(paragraph, font, OKNO_SZER - 100)
-        for line in lines:
-            rendered_text = font.render(line, True, (255, 255, 255))  
-            window.blit(rendered_text, (OKNO_SZER // 2 - rendered_text.get_width() // 2, y_offset))
-            y_offset += line_height
-        y_offset += paragraph_spacing  
-    
-    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
-
-def pokaz_zasady_fullscreen(window):
-    window.blit(tlo_zasady, (0, 0))
-    tytul_font = pygame.font.Font(moja_czcionka, 150)
-    zasady_tytul_text = "ZASADY:"
-    zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255)) 
-    zasady_tytul_rect = zasady_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
-    window.blit(zasady_tytul, zasady_tytul_rect)
-
-    font = pygame.font.Font(moja_czcionka, 35)  
-    tekst = [
-        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 10x8 kratek, z bramkami o szerokości dwóch kratek",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
-    ]
-
-    y_offset = FULLSCREEN_WYS // 5
-    line_height = font.get_linesize()  
-    paragraph_spacing = 50  
-    for paragraph in tekst:
-        lines = wrap_text(paragraph, font, FULLSCREEN_SZER - 100)
-        for line in lines:
-            rendered_text = font.render(line, True, (255, 255, 255))  
-            window.blit(rendered_text, (FULLSCREEN_SZER // 2 - rendered_text.get_width() // 2, y_offset))
-            y_offset += line_height
-        y_offset += paragraph_spacing  
-    
-    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
-
-def pokaz_ustawienia(window):
-    window.blit(tlo_ustawienia, (0, 0))
-    tytul_font = pygame.font.Font(moja_czcionka, 100)
-    ustawienia_tytul_text = "USTAWIENIA:"
-    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
-    ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(OKNO_SZER // 2, 80))
-    window.blit(ustawienia_tytul, ustawienia_tytul_rect)
-    font = pygame.font.Font(moja_czcionka, 45)
-    tekst = [
-        ""
-    ]
-    for i, line in enumerate(tekst):
-        rendered_text = font.render(line, True, (255, 255, 255))
-        window.blit(rendered_text, (50, 150 + i * 40))
-    
-    przycisk_pelny_ekran.wyswietl(window)
-    
-    napis = font.render("FULLSCREEN", True, (255, 255, 255))
-    window.blit(napis, ((OKNO_SZER - napis.get_width()) // 2, (OKNO_WYS) // 2 - 90))
-
-    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
-
-def pokaz_ustawienia_fullscreen(window):
-    window.blit(tlo_ustawienia2, (0, 0))
-    tytul_font = pygame.font.Font(moja_czcionka, 150)
-    ustawienia_tytul_text = "USTAWIENIA:"
-    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
-    ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
-    window.blit(ustawienia_tytul, ustawienia_tytul_rect)
-    
-    font = pygame.font.Font(moja_czcionka, 72)
-    tekst = [
-             
-             ""]
-    for i, line in enumerate(tekst):
-        rendered_text = font.render(line, True, (255, 255, 255))
-        window.blit(rendered_text, (FULLSCREEN_SZER // 4, FULLSCREEN_WYS // 4 + i * 80))
-    
-    przycisk_pelny_ekran.skaluj(300,300)
-    przycisk_pelny_ekran.x_cord = (FULLSCREEN_SZER - 300) // 2
-    przycisk_pelny_ekran.y_cord = (FULLSCREEN_WYS - 300) // 2
-    przycisk_pelny_ekran.wyswietl(window)
-
-    napis = font.render("FULLSCREEN", True, (255, 255, 255))
-    window.blit(napis, ((FULLSCREEN_SZER - napis.get_width()) // 2, (FULLSCREEN_WYS) // 2 - 250))
-
-    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 150))
-
-def pokaz_menu(window):
-    window.blit(tlo, (0, 0))
-    tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, tytul_y))
-    window.blit(tytul_image, tytul_rect)
-    for przycisk in przyciski_menu:
-        przycisk.wyswietl(window)
-
-def pokaz_menu_fullscreen(window):
-    window.blit(tlo_fullscreen, (0, 0))
-    tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
-    tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
-    window.blit(tytul_image_fs, tytul_rect)
-    for przycisk in przyciski_menu:
-        przycisk.wyswietl(window)
-
+   
 graj = True
 while graj:
     for zdarzenie in pygame.event.get():
