@@ -29,9 +29,10 @@ small_font = pygame.font.Font(None, 36)
 
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
-tlo_zasady = pygame.image.load("tlo_zasady2.png")
+tlo_zasady = pygame.image.load("tlo_zasady.png")
+tlo_zasady2 = pygame.transform.scale(tlo_zasady, (1920, 1080))
 tlo_ustawienia = pygame.image.load("tlo_ustawienia.png")
-tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
+tlo_ustawienia2 = pygame.transform.scale(tlo_ustawienia, (1920, 1080))
 tlo_pauza = pygame.image.load("tlo_pauza.jpg")
 tlo_pauza = pygame.transform.scale(tlo_pauza, (WINDOW_WIDTH, WINDOW_HEIGHT+50))
 tytul_image = pygame.image.load("tytul2.png")
@@ -93,6 +94,7 @@ class Przycisk:
     
     def skaluj(self, new_width, new_height):
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
+        self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
         self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
         
     def resetuj(self):
@@ -172,8 +174,7 @@ tekst_zasad = [
     "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
     "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu.",
     "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać.",
-    "Gra kończy się gdy jeden z graczy zdobędzie dwa gole."
-    "Umieszczenie piłki w swojej bramce skutkuje jej powrotem na środek boiska.",
+    "Gra kończy się gdy jeden z graczy zdobędzie dwa gole.",
 ]
 
 def pokaz_zasady(window):
@@ -200,7 +201,7 @@ def pokaz_zasady(window):
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 def pokaz_zasady_fullscreen(window):
-    window.blit(tlo_zasady, (0, 0))
+    window.blit(tlo_zasady2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     zasady_tytul_text = "ZASADY:"
     zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255)) 
