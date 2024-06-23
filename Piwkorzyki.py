@@ -57,7 +57,7 @@ def intro():
         text_rect = intro_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS / 2))
         okienko.blit(intro_text, text_rect)
 
-        skip_text = small_font.render('Kliknij dwukrotnie, aby pominąć.', True, white)
+        skip_text = small_font.render('Kliknij dwukrotnie, aby wejść do gry.', True, white)
         skip_text_rect = skip_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 50))
         okienko.blit(skip_text, skip_text_rect)
 
@@ -114,7 +114,7 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
 def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 30
     return [
-        Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y+135, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y + 75, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
 
     #def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
@@ -447,7 +447,7 @@ class Game:
     
     def endGame(self, winner):
         self.screen.fill(CZARNY)
-        self.screen.blit(tlo_koniec, (250, 120))
+        self.screen.blit(tlo_koniec, (WINDOW_WIDTH // 2 - 200, 120))
         self.game_over = True
         self.scores = {1: 0, 2: 0}  # Reset scores
         font = pygame.font.Font(None, 150)
@@ -573,5 +573,5 @@ while graj:
  
     pygame.display.update()
     zegarek.tick(FPS)
- 
+
 pygame.quit()
