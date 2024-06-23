@@ -9,6 +9,15 @@ FULLSCREEN_SZER = 1920
 FULLSCREEN_WYS = 1080
 FPS = 60
 
+# Rozmiary planszy
+BOARD_WIDTH = 15
+BOARD_HEIGHT = 10
+CELL_SIZE = 60
+
+# Rozmiary okna
+WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
+WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
+
 pygame.init()
 okienko = pygame.display.set_mode((OKNO_SZER, OKNO_WYS), 0, 32)
 pygame.display.set_caption("Piwkorzyki")
@@ -24,7 +33,7 @@ tlo_zasady = pygame.image.load("tlo_zasady2.png")
 tlo_ustawienia = pygame.image.load("tlo_ustawienia.png")
 tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
 tlo_pauza = pygame.image.load("tlo_pauza.jpg")
-tlo_pauza = pygame.transform.scale(tlo_pauza, (800, 600))
+tlo_pauza = pygame.transform.scale(tlo_pauza, (WINDOW_WIDTH, WINDOW_HEIGHT+50))
 tytul_image = pygame.image.load("tytul2.png")
 pilka_image = pygame.image.load("pilka.jpg")
 tlo_koniec = pygame.image.load("piwa.jpg")
@@ -48,7 +57,7 @@ def intro():
         text_rect = intro_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS / 2))
         okienko.blit(intro_text, text_rect)
 
-        skip_text = small_font.render('Kliknij dwukrotnie aby pominąć', True, white)
+        skip_text = small_font.render('Kliknij dwukrotnie, aby pominąć.', True, white)
         skip_text_rect = skip_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 50))
         okienko.blit(skip_text, skip_text_rect)
 
@@ -105,8 +114,8 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
 def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 30
     return [
-        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_zasady3", przycisk_szer, przycisk_wys),
-        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + odstep_y+35, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer//2) // 2, przyciski_y, "przycisk_zasady3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer//2) // 2, przyciski_y + odstep_y+35, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
 
     #def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
@@ -282,15 +291,6 @@ CZERWONY = (255, 0, 0)
 NIEBIESKI = (0, 0, 255)
 ZIELONY = (0, 255, 0)
 
-# Rozmiary planszy
-BOARD_WIDTH = 15
-BOARD_HEIGHT = 10
-CELL_SIZE = 60
-
-# Rozmiary okna
-WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
-WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
-
 GOALS_TO_WIN = 1
 
 class Game:
@@ -448,7 +448,7 @@ class Game:
     
     def endGame(self, winner):
         self.screen.fill(CZARNY)
-        self.screen.blit(tlo_koniec, (175, 120))
+        self.screen.blit(tlo_koniec, (250, 120))
         self.game_over = True
         self.scores = {1: 0, 2: 0}  # Reset scores
         font = pygame.font.Font(None, 150)
