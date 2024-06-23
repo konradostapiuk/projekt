@@ -29,9 +29,10 @@ small_font = pygame.font.Font(None, 36)
 
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
-tlo_zasady = pygame.image.load("tlo_zasady2.png")
+tlo_zasady = pygame.image.load("tlo_zasady.png")
+tlo_zasady2 = pygame.transform.scale(tlo_zasady, (1920, 1080))
 tlo_ustawienia = pygame.image.load("tlo_ustawienia.png")
-tlo_ustawienia2 = pygame.image.load("tlo_ustawienia2.png")
+tlo_ustawienia2 = pygame.transform.scale(tlo_ustawienia, (1920, 1080))
 tlo_pauza = pygame.image.load("tlo_pauza.jpg")
 tlo_pauza = pygame.transform.scale(tlo_pauza, (WINDOW_WIDTH, WINDOW_HEIGHT+50))
 tytul_image = pygame.image.load("tytul2.png")
@@ -93,6 +94,7 @@ class Przycisk:
     
     def skaluj(self, new_width, new_height):
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
+        self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
         self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
         
     def resetuj(self):
