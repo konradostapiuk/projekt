@@ -309,6 +309,10 @@ class Game:
     def load_images(self):
         self.pilka_image = pygame.image.load("pilka.jpg")
         self.pilka_image = pygame.transform.scale(self.pilka_image, (CELL_SIZE, CELL_SIZE))
+        self.bramka_image = pygame.image.load("bramka.jpg")
+        self.bramka_image = pygame.transform.scale(self.bramka_image, (CELL_SIZE, 2*CELL_SIZE))
+        self.bramka0_image = pygame.image.load("bramka0.jpg")
+        self.bramka0_image = pygame.transform.scale(self.bramka0_image, (CELL_SIZE, 2*CELL_SIZE))
         
     def initGame(self):
         self.board = np.zeros((BOARD_HEIGHT, BOARD_WIDTH), dtype=int)
@@ -326,11 +330,20 @@ class Game:
                     pygame.draw.rect(self.screen, NIEBIESKI, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
                 else:
                     pygame.draw.rect(self.screen, CZARNY, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE), 1)
+        left_goal_pos = ((BOARD_HEIGHT // 2)-1, 0)
+        self.screen.blit(self.bramka0_image, (left_goal_pos[1] * CELL_SIZE, left_goal_pos[0] * CELL_SIZE))
+        right_goal_pos = ((BOARD_HEIGHT // 2)-1, BOARD_WIDTH - 1)
+        self.screen.blit(self.bramka_image, (right_goal_pos[1] * CELL_SIZE, right_goal_pos[0] * CELL_SIZE))
 
         font = pygame.font.SysFont(None, 30)
-        text = font.render(f"Player {self.player_turn} turn", True, CZARNY)
+        if self.player_turn == 1:
+            text = font.render(f"Player {self.player_turn} turn (-->)", True, CZARNY)
+        else:
+            text = font.render(f"Player {self.player_turn} turn (<--)", True, CZARNY)
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT + 25))
         self.screen.blit(text, text_rect)
+        pygame.display.update()
+        
 
     def MenuPauza(self):
         self.screen.blit(tlo_pauza, (0, 0))
