@@ -12,7 +12,7 @@ FPS = 60
 # Rozmiary planszy
 BOARD_WIDTH = 15
 BOARD_HEIGHT = 10
-CELL_SIZE = 60
+CELL_SIZE = 70
 
 # Rozmiary okna
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
@@ -175,8 +175,7 @@ tekst_zasad = [
     "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
     "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu.",
     "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać.",
-    "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli.",
-    "Umieszczenie piłki we własnej bramce skutkuje jej powrotem na środek boiska.",
+    "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
 ]
 
 def pokaz_zasady(window):
@@ -325,7 +324,7 @@ class Game:
     def drawBoard(self):
         self.screen.fill(BIALY)
         board_rect = pygame.Rect(0, 0, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE)
-        boisko_image = pygame.image.load('boisko.jpg')
+        boisko_image = pygame.image.load('boisko.jpeg')
         boisko_image = pygame.transform.scale(boisko_image, (BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE))
         self.screen.blit(boisko_image, (0, 0))
         for row in range(BOARD_HEIGHT):
