@@ -38,6 +38,7 @@ tytul_image = pygame.image.load("tytul2.png")
 pilka_image = pygame.image.load("pilka.jpg")
 tlo_koniec = pygame.image.load("piwa.jpg")
 tlo_koniec = pygame.transform.scale(tlo_koniec, (400, 300))
+tlo_intro = pygame.image.load("intro.png")
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -51,11 +52,8 @@ def intro():
                 sys.exit()
             if event.type == MOUSEBUTTONDOWN:
                 intro_active = False
-
-        okienko.fill(black)
-        intro_text = font.render('Intro Screen', True, white)
-        text_rect = intro_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS / 2))
-        okienko.blit(intro_text, text_rect)
+                
+        okienko.blit(tlo_intro, (0, 0))
 
         skip_text = small_font.render('Kliknij dwukrotnie, aby wejść do gry.', True, white)
         skip_text_rect = skip_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 50))
@@ -174,7 +172,7 @@ tekst_zasad = [
     "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
     "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu.",
     "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać.",
-    "Gra kończy się gdy jeden z graczy zdobędzie dwa gole.",
+    "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
 ]
 
 def pokaz_zasady(window):
