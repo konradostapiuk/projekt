@@ -319,16 +319,16 @@ class Game:
         self.lines = np.zeros((BOARD_HEIGHT, BOARD_WIDTH, 8), dtype=bool)
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.player_turn = 1
-        self.highlighted_cells = [(BOARD_HEIGHT//2-1, BOARD_WIDTH-1), (BOARD_HEIGHT//2,BOARD_WIDTH-1),(BOARD_HEIGHT//2-1, 0),(BOARD_HEIGHT//2, 0)]
         self.scores = {1: 0, 2: 0}
     
     def drawBoard(self):
         self.screen.fill(BIALY)
+        board_rect = pygame.Rect(0, 0, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE)
+        boisko_image = pygame.image.load('boisko.jpg')
+        boisko_image = pygame.transform.scale(boisko_image, (BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE))
+        self.screen.blit(boisko_image, (0, 0))
         for row in range(BOARD_HEIGHT):
             for col in range(BOARD_WIDTH):
-                if (row, col) in self.highlighted_cells:
-                    pygame.draw.rect(self.screen, NIEBIESKI, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
-                else:
                     pygame.draw.rect(self.screen, CZARNY, (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE), 1)
         left_goal_pos = ((BOARD_HEIGHT // 2)-1, 0)
         self.screen.blit(self.bramka0_image, (left_goal_pos[1] * CELL_SIZE, left_goal_pos[0] * CELL_SIZE))
