@@ -402,6 +402,24 @@ class Game:
             return 7
         else:
             return None
+    def hasAvailableMoves(self):
+        y, x = self.ball_pos
+        directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+        for direction in directions:
+            ny, nx = y + direction[0], x + direction[1]
+            if 0 <= ny < BOARD_HEIGHT and 0 <= nx < BOARD_WIDTH:
+                direction_index = self.getDirection(self.ball_pos, (ny, nx))
+                if direction_index is not None and not self.lines[y, x, direction_index]:
+                    return True
+        return False
+    def scoreForOpponent(self):
+        self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
+        print(f"Player {self.player_turn} scores due to no available moves!")
+        self.scores[self.player_turn] += 1
+        self.lines.fill(False)
+        self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+        if self.scores[self.player_turn] >= GOALS_TO_WIN:
+            self.endGame(self.player_turn)
 
     def moveBall(self, pos):
         if not (0 <= pos[0] < BOARD_HEIGHT and 0 <= pos[1] < BOARD_WIDTH):
@@ -415,11 +433,17 @@ class Game:
             self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
             self.ball_pos = pos
             print(f"Moved ball to {pos}")
-        if not self.checkGoal():
-            if self.ball_pos[1] in [0, BOARD_WIDTH - 1] and \
-                self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
-                    self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
-                    print("Goal scored!")
+            if self.checkGoal():
+                print("Goal scored!")
+                self.lines.fill(False)
+                self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+                self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
+            else:
+                if not self.hasAvailableMoves():
+                    self.scoreForOpponent()
+                else:
+                    print(f"Player {self.player_turn} gets an additional move.")
+                    self.additional_move = False
     
     def checkGoal(self):
         if self.ball_pos[1] == 0:  # Piłka w lewej bramce
