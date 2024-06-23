@@ -161,6 +161,13 @@ def wrap_text(text, font, max_width):
             current_line = word + " "
     lines.append(current_line)
     return lines
+tekst_zasad = [
+    "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
+    "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
+    "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
+    "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
+    "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
+]
 
 def pokaz_zasady(window):
     window.blit(tlo_zasady, (0, 0))
@@ -171,18 +178,10 @@ def pokaz_zasady(window):
     window.blit(zasady_tytul, zasady_tytul_rect)
     
     font = pygame.font.Font(moja_czcionka, 24)  
-    tekst = [
-        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
-    ]
-    
     y_offset = 200
     line_height = font.get_linesize()  
     paragraph_spacing = 40 
-    for paragraph in tekst:
+    for paragraph in tekst_zasad:
         lines = wrap_text(paragraph, font, OKNO_SZER - 100)
         for line in lines:
             rendered_text = font.render(line, True, (255, 255, 255))  
@@ -202,18 +201,10 @@ def pokaz_zasady_fullscreen(window):
     window.blit(zasady_tytul, zasady_tytul_rect)
 
     font = pygame.font.Font(moja_czcionka, 35)  
-    tekst = [
-        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
-    ]
-
     y_offset = FULLSCREEN_WYS // 5
     line_height = font.get_linesize()  
     paragraph_spacing = 50  
-    for paragraph in tekst:
+    for paragraph in tekst_zasad:
         lines = wrap_text(paragraph, font, FULLSCREEN_SZER - 100)
         for line in lines:
             rendered_text = font.render(line, True, (255, 255, 255))  
@@ -223,6 +214,7 @@ def pokaz_zasady_fullscreen(window):
     
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
+
 
 def pokaz_ustawienia(window):
     window.blit(tlo_ustawienia, (0, 0))
