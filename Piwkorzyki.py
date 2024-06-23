@@ -169,11 +169,15 @@ class Game:
     def isValidMove(self, pos):
         y, x = pos
         direction = self.getDirection(self.ball_pos, pos)
+        if direction is None:
+            print("Nie prawidłowy ruch piłki")
+            return False
         if abs(self.ball_pos[0] - y) <= 1 and abs(self.ball_pos[1] - x) <= 1:
-            if not self.lines[self.ball_pos[0], self.ball_pos[1], direction].any():
+            if not self.lines[self.ball_pos[0], self.ball_pos[1], direction]:
                 return True
+        print("Nie prawidłowy ruch piłki")
         return False
-
+    
     def getDirection(self, start, end):
         dy, dx = end[0] - start[0], end[1] - start[1]
         if dy == -1 and dx == -1:
@@ -192,14 +196,22 @@ class Game:
             return 6
         elif dy == 0 and dx == -1:
             return 7
+        else:
+            return None
 
     def moveBall(self, pos):
-        direction = self.getDirection(self.ball_pos, pos)
-        self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
-        self.ball_pos = pos
-        self.checkGoal()
-        if self.ball_pos[1] in [0, BOARD_WIDTH - 1] and self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
-            self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+        if 0 <= pos[0] < BOARD_HEIGHT and 0 <= pos[1] < BOARD_WIDTH:
+            direction = self.getDirection(self.ball_pos, pos)
+            if direction is not None:
+                self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
+                self.ball_pos = pos
+                self.checkGoal()
+                if self.ball_pos[1] in [0, BOARD_WIDTH - 1] and self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
+                    self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+            else:
+                print("Invalid direction for moveBall")
+        else:
+            print(f"Position {pos} is out of bounds")
 
     def checkGoal(self):
         if self.ball_pos[1] in [0, BOARD_WIDTH - 1]:
