@@ -202,7 +202,7 @@ def pokaz_zasady(window):
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 def pokaz_zasady_fullscreen(window):
-    window.blit(tlo_zasady, (0, 0))
+    window.blit(tlo_zasady2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     zasady_tytul_text = "ZASADY:"
     zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255)) 
