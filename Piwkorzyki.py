@@ -161,6 +161,13 @@ def wrap_text(text, font, max_width):
             current_line = word + " "
     lines.append(current_line)
     return lines
+tekst_zasad = [
+    "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
+    "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
+    "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu.",
+    "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać.",
+    "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
+]
 
 def pokaz_zasady(window):
     window.blit(tlo_zasady, (0, 0))
@@ -171,18 +178,10 @@ def pokaz_zasady(window):
     window.blit(zasady_tytul, zasady_tytul_rect)
     
     font = pygame.font.Font(moja_czcionka, 24)  
-    tekst = [
-        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
-    ]
-    
     y_offset = 200
     line_height = font.get_linesize()  
     paragraph_spacing = 40 
-    for paragraph in tekst:
+    for paragraph in tekst_zasad:
         lines = wrap_text(paragraph, font, OKNO_SZER - 100)
         for line in lines:
             rendered_text = font.render(line, True, (255, 255, 255))  
@@ -202,18 +201,10 @@ def pokaz_zasady_fullscreen(window):
     window.blit(zasady_tytul, zasady_tytul_rect)
 
     font = pygame.font.Font(moja_czcionka, 35)  
-    tekst = [
-        "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
-        "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-        "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu",
-        "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać. Jeśli w pozycji końcowej znajdował się przed wykonaniem ruchu koniec odcinka lub brzeg boiska, to po wykonaniu ruchu gracz wykonuje kolejny.",
-        "Gra kończy się gdy jeden z graczy zdobędzie wymaganą liczbę goli, która ustalana jest przed rozpoczęciem meczu.",
-    ]
-
     y_offset = FULLSCREEN_WYS // 5
     line_height = font.get_linesize()  
     paragraph_spacing = 50  
-    for paragraph in tekst:
+    for paragraph in tekst_zasad:
         lines = wrap_text(paragraph, font, FULLSCREEN_SZER - 100)
         for line in lines:
             rendered_text = font.render(line, True, (255, 255, 255))  
@@ -223,6 +214,7 @@ def pokaz_zasady_fullscreen(window):
     
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
+
 
 def pokaz_ustawienia(window):
     window.blit(tlo_ustawienia, (0, 0))
@@ -310,6 +302,7 @@ class Game:
         self.initGame()
         self.paused = False
         self.game_over = False
+        self.additional_move = False
         self.load_images()
         self.resetGame()
 
@@ -357,13 +350,15 @@ class Game:
         y, x = pos
         direction = self.getDirection(self.ball_pos, pos)
         if direction is None:
-            print("Nie prawidłowy ruch piłki")
+            print("Nieprawidłowy kierunek ruchu dla piłki")
             return False
-        if abs(self.ball_pos[0] - y) <= 1 and abs(self.ball_pos[1] - x) <= 1:
-            if not self.lines[self.ball_pos[0], self.ball_pos[1], direction]:
-                return True
-        print("Nie prawidłowy ruch piłki")
-        return False
+        if abs(self.ball_pos[0] - y) > 1 or abs(self.ball_pos[1] - x) > 1:
+            print("Nieprawidłowa odległość ruchu dla piłki")
+            return False
+        if self.lines[self.ball_pos[0], self.ball_pos[1], direction]:
+            print(f"Linia w kierunku {direction} jest już narysowana")
+            return False
+        return True
     
     def getDirection(self, start, end):
         dy, dx = end[0] - start[0], end[1] - start[1]
@@ -387,29 +382,53 @@ class Game:
             return None
 
     def moveBall(self, pos):
-        if 0 <= pos[0] < BOARD_HEIGHT and 0 <= pos[1] < BOARD_WIDTH:
-            direction = self.getDirection(self.ball_pos, pos)
-            if direction is not None:
-                self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
-                self.ball_pos = pos
-                self.checkGoal()
-                if self.ball_pos[1] in [0, BOARD_WIDTH - 1] and self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
+        if not (0 <= pos[0] < BOARD_HEIGHT and 0 <= pos[1] < BOARD_WIDTH):
+            print(f"Pozycja {pos} jest poza zakresem")
+            return
+        direction = self.getDirection(self.ball_pos, pos)
+        if direction is None:
+            print("Nieprawidłowy kierunek ruchu dla moveBall")
+            return
+        if self.isValidMove(pos):
+            self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
+            self.ball_pos = pos
+            print(f"Moved ball to {pos}")
+        if not self.checkGoal():
+            if self.ball_pos[1] in [0, BOARD_WIDTH - 1] and \
+                self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
-            else:
-                print("Invalid direction for moveBall")
-        else:
-            print(f"Position {pos} is out of bounds")
-
+                    print("Goal scored!")
+    
     def checkGoal(self):
-        if self.ball_pos[1] in [0, BOARD_WIDTH - 1]:
+        if self.ball_pos[1] == 0:  # Piłka w lewej bramce
             if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
-                print(f"Player {self.player_turn} scores!")
-                self.scores[self.player_turn] += 1
-                if self.scores[self.player_turn] >= GOALS_TO_WIN:
-                    self.endGame(self.player_turn)
-                    return
-        self.player_turn = 3 - self.player_turn
-
+                if self.player_turn == 2:  # Tylko gracz 2 może zdobyć bramkę w lewej bramce
+                    print(f"Player {self.player_turn} scores!")
+                    self.scores[self.player_turn] += 1
+                    if self.scores[self.player_turn] >= GOALS_TO_WIN:
+                        self.additional_move = False
+                        self.endGame(self.player_turn)
+                        return True
+                else:
+                    print("Gracz numer 1 próbował strzelić samobója, piłka wraca na środek boiska")
+                    self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+                    self.additional_move = False  # Resetowanie dodatkowego ruchu przy samobóju
+                    return False
+        elif self.ball_pos[1] == BOARD_WIDTH - 1:  # Piłka w prawej bramce
+            if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
+                if self.player_turn == 1:  # Tylko gracz 1 może zdobyć bramkę w prawej bramce
+                    print(f"Player {self.player_turn} scores!")
+                    self.scores[self.player_turn] += 1
+                    if self.scores[self.player_turn] >= GOALS_TO_WIN:
+                        self.additional_move = False
+                        self.endGame(self.player_turn)
+                        return True
+                else:
+                    print("Gracz numer 2 próbował strzelić samobója, piłka wraca na środek boiska")
+                    self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+                    self.additional_move = False  # Resetowanie dodatkowego ruchu przy samobóju
+                    return False
+        return False
     def resetGame(self):
         self.initGame()
         self.game_over = False
@@ -461,6 +480,13 @@ class Game:
                             if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
                                 if self.isValidMove((y, x)):
                                     self.moveBall((y, x))
+                                    if not self.additional_move:
+                                        self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
+                                    else:
+                                        print(f"Player {self.player_turn} gets an additional move.")
+                                        self.additional_move = False
+                                        self.player_turn = 3-self.player_turn  # Resetowanie dodatkowego ruchu
+
                                     
             if self.paused:
                 self.MenuPauza()
