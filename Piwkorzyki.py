@@ -452,6 +452,7 @@ class Game:
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
                     self.lines.fill(False)
+                    self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                     if self.scores[self.player_turn] >= GOALS_TO_WIN:
                         self.additional_move = False
                         self.endGame(self.player_turn)
@@ -468,6 +469,7 @@ class Game:
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
                     self.lines.fill(False)
+                    self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                     if self.scores[self.player_turn] >= GOALS_TO_WIN:
                         self.additional_move = False
                         self.endGame(self.player_turn)
