@@ -114,8 +114,7 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
 def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 30
     return [
-        Przycisk((i_szerokosc - przycisk_szer//2) // 2, przyciski_y, "przycisk_zasady3", przycisk_szer, przycisk_wys),
-        Przycisk((i_szerokosc - przycisk_szer//2) // 2, przyciski_y + odstep_y+35, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y+135, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
 
     #def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
@@ -504,11 +503,8 @@ class Game:
             if self.paused:
                 self.MenuPauza()
                 if przyciski_pauza[0].klik():
-                    current_screen == "zasady"
-                    pokaz_zasady(okienko)
-                elif przyciski_pauza[1].klik():
-                    running = False
-
+                    pygame.quit()
+                    pokaz_menu(okienko)
             elif not self.game_over:
                 self.drawBoard()
                 ball_screen_pos = (
