@@ -64,22 +64,22 @@ Plan działania na następne tygodnie jest następujący:
 
 1. Dokończyć menu:
 - poprawić widoczność tekstu zasad                                            ZROBIONE
-- dodać inne ustawienia
+- dodać inne ustawienia                                                       ZROBIONE
 - zwiększyć odległość między przyciskami w trybie fullscreen                  ZROBIONE
-- udoskonalić estetykę UI                                                     W TRAKCIE
+- udoskonalić estetykę UI                                                     ZROBIONE
 
 2. Stworzyć grę:
-- boisko                                                                      W TRAKCIE
+- boisko                                                                      ZROBIONE
 - model piłki                                                                 ZROBIONE
 - grywalny prototyp                                                           ZROBIONE
 
-3. Udoskonalić grę:
-- umożliwić wybór długości gry
+3. Udoskonalić grę: (opcjonalnie - jeśli czas pozwoli):
+- umożliwić wybór długości gry                                                ZROBIONE
 - dodać kilka innych modeli boisk oraz piłek do wyboru
 - dodać możliwość wybroru niestandardowego wyjściowego położenia piłki
 
-4. Wersja 2.0 (opcjonalnie - jeśli czas pozwoli):
-- dodać muzykę i efekty dźwiękowe 
+4. Wersja 2.0 (bardzo opcjonalnie - mało prawdopodobne, że wystarczy czasu):
+- dodać muzykę i efekty dźwiękowe                                             ZROBIONE
 - stworzyć drużyny
 - stworzyć inne tryby gry
 - dodać więcej efektów specjalnych
