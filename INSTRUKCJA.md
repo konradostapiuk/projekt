@@ -11,4 +11,5 @@ Przycisk "graj" przekierowuje nas do okna, w którym znajduje się gra. Na pocz�
 Po zakończonej rozgrywce pojawią się dwie możliwości
 Kliknięcie Q spowoduje ponowne rozpoczęcie rozgrywki
 Kliknięcie R spowoduje wyjście z gry 
+Kliknięcie S spowoduje przejście do ustawień
  
