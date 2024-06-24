@@ -421,6 +421,7 @@ class Game:
         self.scores[self.player_turn] += 1
         self.lines.fill(False)
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+        self.ball_path = [self.ball_pos]
         if self.scores[self.player_turn] >= GOALS_TO_WIN:
             self.endGame(self.player_turn)
 #mechanika ruszania piłką
