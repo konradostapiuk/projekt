@@ -1,5 +1,6 @@
 import pygame
 import sys
+import math
 import numpy as np
 from pygame.locals import *
 
@@ -305,6 +306,7 @@ class Game:
         self.additional_move = False
         self.load_images()
         self.resetGame()
+        self.ball_path = []
 
     def load_images(self):
         self.pilka_image = pygame.image.load("pilka.jpg")
@@ -432,10 +434,12 @@ class Game:
         if self.isValidMove(pos):
             self.lines[self.ball_pos[0], self.ball_pos[1], direction] = True
             self.ball_pos = pos
+            self.ball_path.append(pos)
             print(f"Moved ball to {pos}")
             if self.checkGoal():
                 print("Goal scored!")
                 self.lines.fill(False)
+                self.ball_path = []
                 self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                 self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
             else:
@@ -452,6 +456,7 @@ class Game:
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
                     self.lines.fill(False)
+                    self.ball_path = []
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                     if self.scores[self.player_turn] >= GOALS_TO_WIN:
                         self.additional_move = False
@@ -469,6 +474,7 @@ class Game:
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
                     self.lines.fill(False)
+                    self.ball_path = []
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                     if self.scores[self.player_turn] >= GOALS_TO_WIN:
                         self.additional_move = False
@@ -483,6 +489,7 @@ class Game:
         return False
     def resetGame(self):
         self.initGame()
+        self.ball_path = []
         self.game_over = False
     
     def endGame(self, winner):
@@ -507,6 +514,28 @@ class Game:
         self.screen.blit(text3, text3_rect)
         self.screen.blit(text4, text4_rect)
         pygame.display.update()
+    def drawBallPath(self):
+        for i in range(1, len(self.ball_path)):
+            start = self.ball_path[i - 1]
+            end = self.ball_path[i]
+            start_pos = (start[1] * CELL_SIZE + CELL_SIZE // 2, start[0] * CELL_SIZE + CELL_SIZE // 2)
+            end_pos = (end[1] * CELL_SIZE + CELL_SIZE // 2, end[0] * CELL_SIZE + CELL_SIZE // 2)
+            pygame.draw.line(self.screen, CZARNY, start_pos, end_pos, 3)  # Draw the line
+            self.drawArrow(start_pos, end_pos)
+        
+    def drawArrow(self, start_pos, end_pos):
+        angle = math.atan2(end_pos[1] - start_pos[1], end_pos[0] - start_pos[0])
+        arrow_length = 10
+        arrow_angle = math.pi / 6
+        arrow_point1 = (
+            end_pos[0] - arrow_length * math.cos(angle - arrow_angle),
+            end_pos[1] - arrow_length * math.sin(angle - arrow_angle)
+        )
+        arrow_point2 = (
+            end_pos[0] - arrow_length * math.cos(angle + arrow_angle),
+            end_pos[1] - arrow_length * math.sin(angle + arrow_angle)
+        )
+        pygame.draw.polygon(self.screen, CZARNY, [end_pos, arrow_point1, arrow_point2])
 
     def run(self):
         running = True
@@ -552,6 +581,7 @@ class Game:
                     self.ball_pos[0] * CELL_SIZE   # y
                 )
                 self.screen.blit(self.pilka_image, ball_screen_pos)
+                self.drawBallPath()
 
             pygame.display.update()
             self.clock.tick(30)
