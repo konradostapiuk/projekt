@@ -4,6 +4,7 @@ import math
 import numpy as np
 from pygame.locals import *
 
+# Rozmiary okna menu
 OKNO_SZER = 1024
 OKNO_WYS = 1024
 FULLSCREEN_SZER = 1920
@@ -28,6 +29,9 @@ moja_czcionka = "pricedown bl.otf"
 font = pygame.font.Font(None, 74)
 small_font = pygame.font.Font(None, 36)
 
+# Wyciszenie gry wyłączone przy otwieraniu aplikacji
+wyciszenie = False
+
 #załadowanie wszystkich potrzebnych teł, obiektów graficznych etc.
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
@@ -43,12 +47,23 @@ tlo_koniec = pygame.image.load("piwa.jpg")
 tlo_koniec = pygame.transform.scale(tlo_koniec, (400, 300))
 tlo_intro = pygame.image.load("intro.png")
 
-black = (0, 0, 0)
-white = (255, 255, 255)
+# Dźwięki
+uderzenie_sfx = pygame.mixer.Sound("uderzenie.mp3")
+intro_sfx = pygame.mixer.Sound("intro.mp3")
+gol_sfx = pygame.mixer.Sound("gol.mp3")
+piosenka_sfx = pygame.mixer.Sound("piosenka.mp3")
+
+# Definiowanie kolorów
+BIALY = (255, 255, 255)
+CZARNY = (0, 0, 0)
+CZERWONY = (255, 0, 0)
+NIEBIESKI = (0, 0, 255)
+ZIELONY = (0, 255, 0)
 
 # włączenie ekranu startowego
 def intro():
     intro_active = True
+    intro_sfx.play()
     while intro_active:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -56,10 +71,11 @@ def intro():
                 sys.exit()
             if event.type == MOUSEBUTTONDOWN:
                 intro_active = False
+                pygame.mixer.stop()
                 
         okienko.blit(tlo_intro, (0, 0))
 
-        skip_text = small_font.render('Kliknij dwukrotnie, aby wejść do gry.', True, white)
+        skip_text = small_font.render('Kliknij dwukrotnie, aby wejść do gry.', True, BIALY)
         skip_text_rect = skip_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 50))
         okienko.blit(skip_text, skip_text_rect)
 
@@ -128,7 +144,9 @@ full_screen = False
 
 przyciski_menu = ustawienia_przyciski(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
-przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "fullscreen", 200, 200)
+przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 450) // 2, "fullscreen", 200, 200)
+przycisk_glos = Przycisk((OKNO_SZER - 150) // 2, (OKNO_WYS + 200) // 2, "glos", 150, 150)
+przycisk_wyciszony = Przycisk((OKNO_SZER - 150) // 2, (OKNO_WYS + 200) // 2, "wyciszony", 150, 150)
 
 przyciski_pauza = ustawienia_przyciski_pauza(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
@@ -227,7 +245,7 @@ def pokaz_ustawienia(window):
     window.blit(tlo_ustawienia, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
     ustawienia_tytul_text = "USTAWIENIA:"
-    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
+    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, BIALY)
     ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(OKNO_SZER // 2, 80))
     window.blit(ustawienia_tytul, ustawienia_tytul_rect)
     font = pygame.font.Font(moja_czcionka, 45)
@@ -235,22 +253,33 @@ def pokaz_ustawienia(window):
         ""
     ]
     for i, line in enumerate(tekst):
-        rendered_text = font.render(line, True, (255, 255, 255))
+        rendered_text = font.render(line, True, BIALY)
         window.blit(rendered_text, (50, 150 + i * 40))
     
-    przycisk_pelny_ekran.wyswietl(window)
+    przycisk_glos.x_cord = (OKNO_SZER - 150) // 2
+    przycisk_glos.y_cord = (OKNO_WYS + 200) // 2
+    przycisk_wyciszony.x_cord = (OKNO_SZER - 150) // 2
+    przycisk_wyciszony.y_cord = (OKNO_WYS + 200) // 2
     
-    napis = font.render("FULLSCREEN", True, (255, 255, 255))
-    window.blit(napis, ((OKNO_SZER - napis.get_width()) // 2, (OKNO_WYS) // 2 - 90))
+    przycisk_pelny_ekran.wyswietl(window)
+    if wyciszenie==False:
+        przycisk_glos.wyswietl(window)
+    else:
+        przycisk_wyciszony.wyswietl(window)
+    
+    napis = font.render("FULLSCREEN", True, BIALY)
+    window.blit(napis, ((OKNO_SZER - napis.get_width()) // 2, (OKNO_WYS) // 2 - 290))
+    napis2 = font.render("GŁOS", True, BIALY)
+    window.blit(napis2, ((OKNO_SZER - napis2.get_width()) // 2, (OKNO_WYS+50) // 2))
 
-    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
+    powrot_text = font.render("Kliknij, aby wrócić do menu", True, BIALY)
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 def pokaz_ustawienia_fullscreen(window):
     window.blit(tlo_ustawienia2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     ustawienia_tytul_text = "USTAWIENIA:"
-    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, (255, 255, 255))
+    ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, BIALY)
     ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
     window.blit(ustawienia_tytul, ustawienia_tytul_rect)
     
@@ -259,20 +288,32 @@ def pokaz_ustawienia_fullscreen(window):
              
              ""]
     for i, line in enumerate(tekst):
-        rendered_text = font.render(line, True, (255, 255, 255))
+        rendered_text = font.render(line, True, BIALY)
         window.blit(rendered_text, (FULLSCREEN_SZER // 4, FULLSCREEN_WYS // 4 + i * 80))
+        
+    przycisk_pelny_ekran.skaluj(200,200)
+    przycisk_pelny_ekran.x_cord = (FULLSCREEN_SZER - 200) // 2
+    przycisk_pelny_ekran.y_cord = (FULLSCREEN_WYS - 400) // 2
+    przycisk_glos.skaluj(150,150)
+    przycisk_glos.x_cord = (FULLSCREEN_SZER - 150) // 2
+    przycisk_glos.y_cord = (FULLSCREEN_WYS + 300) // 2
+    przycisk_wyciszony.skaluj(150,150)
+    przycisk_wyciszony.x_cord = (FULLSCREEN_SZER - 150) // 2
+    przycisk_wyciszony.y_cord = (FULLSCREEN_WYS + 300) // 2
     
-    przycisk_pelny_ekran.skaluj(300,300)
-    przycisk_pelny_ekran.x_cord = (FULLSCREEN_SZER - 300) // 2
-    przycisk_pelny_ekran.y_cord = (FULLSCREEN_WYS - 300) // 2
     przycisk_pelny_ekran.wyswietl(window)
+    if wyciszenie==False:
+        przycisk_glos.wyswietl(window)
+    else:
+        przycisk_wyciszony.wyswietl(window)
 
-    napis = font.render("FULLSCREEN", True, (255, 255, 255))
-    window.blit(napis, ((FULLSCREEN_SZER - napis.get_width()) // 2, (FULLSCREEN_WYS) // 2 - 250))
+    napis = font.render("FULLSCREEN", True, BIALY)
+    window.blit(napis, ((FULLSCREEN_SZER - napis.get_width()) // 2, (FULLSCREEN_WYS) // 2 - 300))
+    napis2 = font.render("GłOS", True, BIALY)
+    window.blit(napis2, ((FULLSCREEN_SZER - napis2.get_width()) // 2, (FULLSCREEN_WYS) // 2 + 50))
 
-    powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
+    powrot_text = font.render("Kliknij, aby wrócić do menu", True, BIALY)
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 150))
-
 
 def pokaz_menu_fullscreen(window):
     window.blit(tlo_fullscreen, (0, 0))
@@ -281,13 +322,7 @@ def pokaz_menu_fullscreen(window):
     window.blit(tytul_image_fs, tytul_rect)
     for przycisk in przyciski_menu:
         przycisk.wyswietl(window)
-    
-# Definiowanie kolorów
-BIALY = (255, 255, 255)
-CZARNY = (0, 0, 0)
-CZERWONY = (255, 0, 0)
-NIEBIESKI = (0, 0, 255)
-ZIELONY = (0, 255, 0)
+        
 
 GOALS_TO_WIN = 2
 
@@ -295,7 +330,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT+50))
-        pygame.display.set_caption('Piłkarzyki')
+        pygame.display.set_caption('Piwkorzyki')
         self.clock = pygame.time.Clock()
         self.initGame()
         self.paused = False
@@ -425,11 +460,14 @@ class Game:
         self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
         print(f"Player {self.player_turn} scores due to no available moves!")
         self.scores[self.player_turn] += 1
+        if not wyciszenie:
+            gol_sfx.play()
         self.lines.fill(False)
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.ball_path = [self.ball_pos]
         if self.scores[self.player_turn] >= GOALS_TO_WIN:
             self.endGame(self.player_turn)
+            
 #mechanika ruszania piłką
     def moveBall(self, pos):
         if not (0 <= pos[0] < BOARD_HEIGHT and 0 <= pos[1] < BOARD_WIDTH):
@@ -460,6 +498,8 @@ class Game:
                 if self.player_turn == 2:  # Tylko gracz 2 może zdobyć bramkę w lewej bramce
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
+                    if not wyciszenie:
+                        gol_sfx.play()
                     self.lines.fill(False)
                     self.ball_path = [self.ball_pos]
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
@@ -470,6 +510,8 @@ class Game:
                 else:
                     print("Gracz numer 1 próbował strzelić samobója, punkt dla przeciwnika")
                     self.scores[3 - self.player_turn] += 1  # Przeciwnik zdobywa punkt
+                    if not wyciszenie:
+                        gol_sfx.play()
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                     self.ball_path = [self.ball_pos]
                     if self.scores[3-self.player_turn] >= GOALS_TO_WIN:
@@ -481,6 +523,8 @@ class Game:
                 if self.player_turn == 1:  # Tylko gracz 1 może zdobyć bramkę w prawej bramce
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
+                    if not wyciszenie:
+                        gol_sfx.play()
                     self.lines.fill(False)
                     self.ball_path = [self.ball_pos]
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
@@ -491,6 +535,8 @@ class Game:
                 else:
                     print("Gracz numer 2 próbował strzelić samobója, punkt dla przeciwnika")
                     self.scores[3 - self.player_turn] += 1  # Przeciwnik zdobywa punkt
+                    if not wyciszenie:
+                        gol_sfx.play()
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                     self.ball_path = [self.ball_pos]
                     if self.scores[3-self.player_turn] >= GOALS_TO_WIN:
@@ -505,6 +551,8 @@ class Game:
 
 #ekran tuz po zakonczeniu rozgrywki
     def endGame(self, winner):
+        if not wyciszenie:
+            piosenka_sfx.play()
         self.screen.fill(CZARNY)
         self.screen.blit(tlo_koniec, (WINDOW_WIDTH // 2 - 200, 120))
         self.game_over = True
@@ -554,6 +602,7 @@ class Game:
             end_pos[1] - arrow_length * math.sin(angle + arrow_angle)
         )
         pygame.draw.polygon(self.screen, CZARNY, [end_pos, arrow_point1, arrow_point2])
+        
 #dzialanie okna z rozgrywką
     def run(self):
         running = True
@@ -566,6 +615,7 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         self.paused = not self.paused
                     elif event.key == pygame.K_r and self.game_over:
+                        pygame.mixer.stop()
                         self.resetGame()
                         self.game_over = False
                     elif event.key == pygame.K_q and self.game_over:
@@ -582,6 +632,8 @@ class Game:
                             if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
                                 if self.isValidMove((y, x)):
                                     self.moveBall((y, x))
+                                    if not wyciszenie:
+                                        uderzenie_sfx.play()
                                     self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
 
                                     
@@ -622,7 +674,9 @@ while graj:
                 elif przyciski_menu[3].klik():
                     graj = False
             elif current_screen == "ustawienia":
-                if przycisk_pelny_ekran.klik():
+                if przycisk_glos.klik():
+                    wyciszenie = not wyciszenie
+                elif przycisk_pelny_ekran.klik():
                     if not full_screen:
                         okienko = pygame.display.set_mode((FULLSCREEN_SZER, FULLSCREEN_WYS), pygame.FULLSCREEN)
                         przyciski_menu = ustawienia_przyciski(FULLSCREEN_SZER, odstepy_y + przycisk_wys, przycisk_szer * 1.5, przycisk_wys * 1.5)
