@@ -513,16 +513,20 @@ class Game:
         text2 = font2.render(f"Gracz {winner} dostaje piwo!", True, BIALY)
         text3 = font2.render("Naciśnij 'R', aby zagrać ponownie.", True, BIALY)
         text4 = font2.render("Naciśnij 'Q', aby zakończyć.", True, BIALY)
+        text5 = font2.render("Naciśnij 'S', aby przejść do ustawień.", True, BIALY)
 
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 8))
         text2_rect = text2.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT *2 // 3 + 20))
         text3_rect = text3.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8))
         text4_rect = text4.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8 + 60))
+        text5_rect = text5.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8 - 60))
 
         self.screen.blit(text, text_rect)
         self.screen.blit(text2, text2_rect)
         self.screen.blit(text3, text3_rect)
         self.screen.blit(text4, text4_rect)
+        self.screen.blit(text5, text5_rect)
+        self.screen.blit
         pygame.display.update()
     
 #rysowanie przebytej drogi przez pilke
@@ -564,6 +568,9 @@ class Game:
                         self.game_over = False
                     elif event.key == pygame.K_q and self.game_over:
                         running = False
+                    elif event.key==pygame.K_s and self.game_over:
+                        
+                        pokaz_ustawienia(okienko)
 
                 if not self.paused and not self.game_over:
                     if event.type == pygame.MOUSEBUTTONDOWN:
