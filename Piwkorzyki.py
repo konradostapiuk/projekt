@@ -15,6 +15,7 @@ FPS = 60
 BOARD_WIDTH = 15
 BOARD_HEIGHT = 10
 CELL_SIZE = 70
+
 # Rozmiary okna
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
 WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
@@ -60,7 +61,7 @@ NIEBIESKI = (0, 0, 255)
 ZIELONY = (0, 255, 0)
 
 # włączenie ekranu startowego
-def intro() -> bool:
+def intro():
     intro_active = True
     intro_sfx.play()
     while intro_active:
@@ -83,7 +84,7 @@ def intro() -> bool:
         
         
 class Przycisk:
-    def __init__(self, x_cord:int, y_cord:int, file_name:str, new_width:int, new_height:int):
+    def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
         self.initial_x = x_cord
         self.initial_y = y_cord
         self.initial_width = new_width
@@ -96,12 +97,12 @@ class Przycisk:
         self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
         self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
     #reakcja przycisku na kliknięcie    
-    def klik(self) -> bool:
+    def klik(self):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             if pygame.mouse.get_pressed()[0]:
                 return True
     #wyswietlenie przycisku na ekranie
-    def wyswietl(self, window:pygame.surface.Surface):
+    def wyswietl(self, window):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             window.blit(self.hovered_button_image, (self.x_cord, self.y_cord))
         else:
@@ -118,7 +119,7 @@ class Przycisk:
         self.skaluj(self.initial_width, self.initial_height)
 
 #zaladowanie przyciskow w menu glownym
-def ustawienia_przyciski(i_szerokosc:int, odstep_y:int, przycisk_szer:int, przycisk_wys:int) -> list:
+def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 150
     return [
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_graj3", przycisk_szer, przycisk_wys),
@@ -127,7 +128,7 @@ def ustawienia_przyciski(i_szerokosc:int, odstep_y:int, przycisk_szer:int, przyc
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y+105, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
 #zaladowanie przyciskow podczas pauzy w rozgrywce
-def ustawienia_przyciski_pauza(i_szerokosc:int, odstep_y:int, przycisk_szer:int, przycisk_wys:int) -> list: 
+def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 30
     return [
         Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y + 75, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
@@ -150,7 +151,7 @@ przycisk_wyciszony = Przycisk((OKNO_SZER - 150) // 2, (OKNO_WYS + 200) // 2, "wy
 przyciski_pauza = ustawienia_przyciski_pauza(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
 # wyswietlenie menu glownego
-def pokaz_menu(window:pygame.surface.Surface)-> None:
+def pokaz_menu(window):
     window.blit(tlo, (0, 0))
     tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, tytul_y))
     window.blit(tytul_image, tytul_rect)
@@ -186,13 +187,13 @@ def wrap_text(text, font, max_width):
 tekst_zasad = [
     "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
     "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
-    "Golem nazywamy również taką sytuację, w której jeden z graczy zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu.",
+    "Golem nazywamy również taką sytuację, w której przeciwnik zostanie zablokowany, czyli nie będzie miał ani jednej możliwości ruchu.",
     "Piłka nie może przemieszczać się wzdłuż brzegu boiska ani po odcinkach, po których już wcześniej się przemieszczała, może jednak się od nich odbijać.",
-    "Gra kończy się gdy jeden z graczy zdobędzie dwa gole."
-    "Umieszczenie piłki w swojej bramce skutkuje jej powrotem na środek boiska.",
+    "Gra kończy się gdy jeden z graczy zdobędzie dwa gole.",
+    "Umieszczenie piłki w swojej bramce skutkuje golem dla przeciwnika.",
 ]
 #wyswietlenie zasad
-def pokaz_zasady(window:pygame.surface.Surface) -> None:
+def pokaz_zasady(window):
     window.blit(tlo_zasady, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
     zasady_tytul_text = "ZASADY:"
@@ -216,7 +217,7 @@ def pokaz_zasady(window:pygame.surface.Surface) -> None:
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 #wyswietlenie zasad w trybie fullscreen
-def pokaz_zasady_fullscreen(window:pygame.surface.Surface) -> None:
+def pokaz_zasady_fullscreen(window):
     window.blit(tlo_zasady2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     zasady_tytul_text = "ZASADY:"
@@ -237,10 +238,10 @@ def pokaz_zasady_fullscreen(window:pygame.surface.Surface) -> None:
         y_offset += paragraph_spacing  
     
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
-    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
+    window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 50))
 
 #wyswietlenie ustawien
-def pokaz_ustawienia(window:pygame.surface.Surface):
+def pokaz_ustawienia(window):
     window.blit(tlo_ustawienia, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
     ustawienia_tytul_text = "USTAWIENIA:"
@@ -274,7 +275,7 @@ def pokaz_ustawienia(window:pygame.surface.Surface):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, BIALY)
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
-def pokaz_ustawienia_fullscreen(window:pygame.surface.Surface):
+def pokaz_ustawienia_fullscreen(window):
     window.blit(tlo_ustawienia2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     ustawienia_tytul_text = "USTAWIENIA:"
@@ -314,12 +315,7 @@ def pokaz_ustawienia_fullscreen(window:pygame.surface.Surface):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, BIALY)
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 150))
 
-<<<<<<< HEAD
-
-def pokaz_menu_fullscreen(window:pygame.surface.Surface):
-=======
 def pokaz_menu_fullscreen(window):
->>>>>>> 88e2df460e180e781afdfeffc2a2739704bec8fb
     window.blit(tlo_fullscreen, (0, 0))
     tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
     tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
@@ -567,19 +563,16 @@ class Game:
         text2 = font2.render(f"Gracz {winner} dostaje piwo!", True, BIALY)
         text3 = font2.render("Naciśnij 'R', aby zagrać ponownie.", True, BIALY)
         text4 = font2.render("Naciśnij 'Q', aby zakończyć.", True, BIALY)
-        text5 = font2.render("Naciśnij 'S', aby przejść do ustawień.", True, BIALY)
 
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 8))
         text2_rect = text2.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT *2 // 3 + 20))
         text3_rect = text3.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8))
         text4_rect = text4.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8 + 60))
-        text5_rect = text5.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT * 7 // 8 - 60))
 
         self.screen.blit(text, text_rect)
         self.screen.blit(text2, text2_rect)
         self.screen.blit(text3, text3_rect)
         self.screen.blit(text4, text4_rect)
-        self.screen.blit(text5, text5_rect)
         self.screen.blit
         pygame.display.update()
     
@@ -624,10 +617,7 @@ class Game:
                         self.game_over = False
                     elif event.key == pygame.K_q and self.game_over:
                         running = False
-                    elif event.key==pygame.K_s and self.game_over:
                         
-                        pokaz_ustawienia(okienko)
-
                 if not self.paused and not self.game_over:
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 1:
