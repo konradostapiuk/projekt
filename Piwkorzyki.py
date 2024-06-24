@@ -301,7 +301,7 @@ class Game:
         self.additional_move = False
         self.load_images()
         self.resetGame()
-        self.ball_path = []
+        self.ball_path = [(BOARD_HEIGHT // 2, BOARD_WIDTH // 2)]
 
 #zaladowanie interfejsu graficznego okna rozgrywki
     def load_images(self):
@@ -440,15 +440,12 @@ class Game:
             if self.checkGoal():
                 print("Goal scored!")
                 self.lines.fill(False)
-                self.ball_path = []
+                self.ball_path = [(BOARD_HEIGHT // 2, BOARD_WIDTH // 2)]
                 self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
                 self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
             else:
                 if not self.hasAvailableMoves():
                     self.scoreForOpponent()
-                else:
-                    print(f"Player {self.player_turn} gets an additional move.")
-                    self.additional_move = False
 #sprawdzenie, czy padl gol
     def checkGoal(self):
         if self.ball_pos[1] == 0:  # Piłka w lewej bramce
@@ -457,17 +454,20 @@ class Game:
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
                     self.lines.fill(False)
-                    self.ball_path = []
+                    self.ball_path = [self.ball_pos]
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+                    self.lines[self.ball_pos[0], self.ball_pos[1], self.getDirection(self.ball_pos, self.ball_path[-1])] = True
                     if self.scores[self.player_turn] >= GOALS_TO_WIN:
-                        self.additional_move = False
                         self.endGame(self.player_turn)
-                        return True
+                    return True
                 else:
-                    print("Gracz numer 1 próbował strzelić samobója, piłka wraca na środek boiska")
+                    print("Gracz numer 1 próbował strzelić samobója, punkt dla przeciwnika")
+                    self.scores[3 - self.player_turn] += 1  # Przeciwnik zdobywa punkt
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+                    self.ball_path = [self.ball_pos]
+                    if self.scores[3-self.player_turn] >= GOALS_TO_WIN:
+                        self.endGame(3-self.player_turn)
                     self.lines.fill(False)
-                    self.additional_move = False  # Resetowanie dodatkowego ruchu przy samobóju
                     return False
         elif self.ball_pos[1] == BOARD_WIDTH - 1:  # Piłka w prawej bramce
             if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
@@ -475,17 +475,20 @@ class Game:
                     print(f"Player {self.player_turn} scores!")
                     self.scores[self.player_turn] += 1
                     self.lines.fill(False)
-                    self.ball_path = []
+                    self.ball_path = [self.ball_pos]
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+                    self.lines[self.ball_pos[0], self.ball_pos[1], self.getDirection(self.ball_pos, self.ball_path[-1])] = True
                     if self.scores[self.player_turn] >= GOALS_TO_WIN:
-                        self.additional_move = False
                         self.endGame(self.player_turn)
-                        return True
+                    return True
                 else:
-                    print("Gracz numer 2 próbował strzelić samobója, piłka wraca na środek boiska")
+                    print("Gracz numer 2 próbował strzelić samobója, punkt dla przeciwnika")
+                    self.scores[3 - self.player_turn] += 1  # Przeciwnik zdobywa punkt
                     self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
+                    self.ball_path = [self.ball_pos]
+                    if self.scores[3-self.player_turn] >= GOALS_TO_WIN:
+                        self.endGame(3-self.player_turn)
                     self.lines.fill(False)
-                    self.additional_move = False  # Resetowanie dodatkowego ruchu przy samobóju
                     return False
         return False
     def resetGame(self):
@@ -565,12 +568,7 @@ class Game:
                             if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:
                                 if self.isValidMove((y, x)):
                                     self.moveBall((y, x))
-                                    if not self.additional_move:
-                                        self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
-                                    else:
-                                        print(f"Player {self.player_turn} gets an additional move.")
-                                        self.additional_move = False
-                                        self.player_turn = 3-self.player_turn  # Resetowanie dodatkowego ruchu
+                                    self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
 
                                     
             if self.paused:
