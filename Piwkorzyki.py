@@ -4,6 +4,7 @@ import sys
 import math
 import numpy as np
 from pygame.locals import *
+import random
 
 # Rozmiary okna menu
 OKNO_SZER = 1024
@@ -45,12 +46,21 @@ tlo_ustawienia2 = pygame.transform.scale(tlo_ustawienia, (1920, 1080))
 tlo_pauza = pygame.image.load("tlo_pauza.jpg")
 tlo_pauza = pygame.transform.scale(tlo_pauza, (WINDOW_WIDTH, WINDOW_HEIGHT+50))
 tytul_image = pygame.image.load("tytul2.png")
-pilka_image = pygame.image.load("pilka.jpg")
 tlo_koniec = pygame.image.load("piwa.jpg")
 tlo_koniec = pygame.transform.scale(tlo_koniec, (400, 300))
 tlo_intro = pygame.image.load("intro.png")
 tlo_wybor = pygame.image.load("tlo_wybor.png")
 tlo_wybor2 = pygame.transform.scale(tlo_wybor, (1920,1080))
+ball_images = [
+    'pilka.png',
+    'pilka2.png',
+    'pilka3.png',
+    'pilka4.png',
+    'pilka5.png',
+    'pilka6.png',
+    'pilka7.png',
+    'pilka8.png'
+]
 
 # Dźwięki
 uderzenie_sfx = pygame.mixer.Sound("uderzenie.mp3")
@@ -379,7 +389,9 @@ class Game:
 
 # Załadowanie interfejsu graficznego okna rozgrywki
     def load_images(self):
-        self.pilka_image = pygame.image.load("pilka.jpg")
+        # Losowy wybór piłki spośród 8 możliwych przez funkcję random
+        selected_ball = random.choice(ball_images)
+        self.pilka_image = pygame.image.load(selected_ball)
         self.pilka_image = pygame.transform.scale(self.pilka_image, (CELL_SIZE, CELL_SIZE))
         self.bramka_image = pygame.image.load("bramka.jpg")
         self.bramka_image = pygame.transform.scale(self.bramka_image, (CELL_SIZE, 2*CELL_SIZE))
