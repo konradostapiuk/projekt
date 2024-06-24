@@ -102,6 +102,7 @@ class Przycisk:
         self.y_cord = self.initial_y
         self.skaluj(self.initial_width, self.initial_height)
 
+#zaladowanie przyciskow w menu glownym
 def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 150
     return [
@@ -110,11 +111,12 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y+70, "przycisk_ustawienia3", przycisk_szer, przycisk_wys),
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y+105, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
-
+#zaladowanie przyciskow podczas pauzy w rozgrywce
 def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 30
     return [
         Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y + 75, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
+        #Przycisk((i_szerokosc - przycisk_szer//2-180) // 2, przyciski_y + odstep_y - 75, "przycisk_menu", przycisk_szer, przycisk_wys)
     ]
 
 #parametry przycisków (wielkóść, odstępy pomiędzy następnymi przyciskami)
@@ -318,6 +320,7 @@ class Game:
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.player_turn = 1
         self.scores = {1: 0, 2: 0}
+
 #zaladowanie boiska
     def drawBoard(self):
         self.screen.fill(BIALY)
@@ -578,6 +581,8 @@ class Game:
                 if przyciski_pauza[0].klik():
                     pygame.quit()
                     pokaz_menu(okienko)
+                #elif przyciski_pauza[1].klik():
+
             elif not self.game_over:
                 self.drawBoard()
                 ball_screen_pos = (
