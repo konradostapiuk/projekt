@@ -28,6 +28,7 @@ moja_czcionka = "pricedown bl.otf"
 font = pygame.font.Font(None, 74)
 small_font = pygame.font.Font(None, 36)
 
+#załadowanie wszystkich potrzebnych teł, obiektów graficznych etc.
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
 tlo_zasady = pygame.image.load("tlo_zasady.png")
@@ -45,6 +46,7 @@ tlo_intro = pygame.image.load("intro.png")
 black = (0, 0, 0)
 white = (255, 255, 255)
 
+# włączenie ekranu startowego
 def intro():
     intro_active = True
     while intro_active:
@@ -67,9 +69,6 @@ def intro():
         
 class Przycisk:
     def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
-
-    
-    
         self.initial_x = x_cord
         self.initial_y = y_cord
         self.initial_width = new_width
@@ -118,12 +117,7 @@ def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wy
         Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y + 75, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
 
-    #def ustawienia_przyciski_po_grze(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
-    # tutaj dodac img przycisku wyjdz do menu Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_wyjdzdomenu",
-    # przycisk_szer, przycisk_wys),
-    # tutaj dodac img przycisku zagraj ponownie Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y,
-    # "przycisk_zagrajponownie" ,przycisk_szer, przycisk_wys)
-
+#parametry przycisków (wielkóść, odstępy pomiędzy następnymi przyciskami)
 przycisk_szer = 400
 przycisk_wys = 120
 odstepy_y = 30
@@ -136,7 +130,7 @@ przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "f
 
 przyciski_pauza = ustawienia_przyciski_pauza(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
-
+# wyswietlenie menu glownego
 def pokaz_menu(window):
     window.blit(tlo, (0, 0))
     tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, tytul_y))
@@ -178,7 +172,7 @@ tekst_zasad = [
     "Gra kończy się gdy jeden z graczy zdobędzie dwa gole."
     "Umieszczenie piłki w swojej bramce skutkuje jej powrotem na środek boiska.",
 ]
-
+#wyswietlenie zasad
 def pokaz_zasady(window):
     window.blit(tlo_zasady, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
@@ -202,6 +196,7 @@ def pokaz_zasady(window):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
+#wyswietlenie zasad w trybie fullscreen
 def pokaz_zasady_fullscreen(window):
     window.blit(tlo_zasady2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
@@ -225,7 +220,7 @@ def pokaz_zasady_fullscreen(window):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
 
-
+#wyswietlenie ustawien
 def pokaz_ustawienia(window):
     window.blit(tlo_ustawienia, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
@@ -308,6 +303,7 @@ class Game:
         self.resetGame()
         self.ball_path = []
 
+#zaladowanie interfejsu graficznego okna rozgrywki
     def load_images(self):
         self.pilka_image = pygame.image.load("pilka.jpg")
         self.pilka_image = pygame.transform.scale(self.pilka_image, (CELL_SIZE, CELL_SIZE))
@@ -322,7 +318,7 @@ class Game:
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         self.player_turn = 1
         self.scores = {1: 0, 2: 0}
-    
+#zaladowanie boiska
     def drawBoard(self):
         self.screen.fill(BIALY)
         board_rect = pygame.Rect(0, 0, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE)
@@ -355,7 +351,7 @@ class Game:
         self.screen.blit(text, text_rect)
         pygame.display.update()
         
-
+#ekran pauzy
     def MenuPauza(self):
         self.screen.blit(tlo_pauza, (0, 0))
         font = pygame.font.Font(None, 150)
@@ -369,7 +365,8 @@ class Game:
         for przycisk in przyciski_pauza:
             przycisk.wyswietl(self.screen)
         pygame.display.update()
-        
+
+#zasady prawidlowego ruchu   
     def isValidMove(self, pos):
         y, x = pos
         direction = self.getDirection(self.ball_pos, pos)
@@ -404,6 +401,8 @@ class Game:
             return 7
         else:
             return None
+        
+#sprawdzenie czy gracz ma mozliwosc wykonania ruchu
     def hasAvailableMoves(self):
         y, x = self.ball_pos
         directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
@@ -414,6 +413,8 @@ class Game:
                 if direction_index is not None and not self.lines[y, x, direction_index]:
                     return True
         return False
+    
+#oddanie gola przeciwnikowi za brak mozliwosci ruchu
     def scoreForOpponent(self):
         self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
         print(f"Player {self.player_turn} scores due to no available moves!")
@@ -422,7 +423,7 @@ class Game:
         self.ball_pos = (BOARD_HEIGHT // 2, BOARD_WIDTH // 2)
         if self.scores[self.player_turn] >= GOALS_TO_WIN:
             self.endGame(self.player_turn)
-
+#mechanika ruszania piłką
     def moveBall(self, pos):
         if not (0 <= pos[0] < BOARD_HEIGHT and 0 <= pos[1] < BOARD_WIDTH):
             print(f"Pozycja {pos} jest poza zakresem")
@@ -448,7 +449,7 @@ class Game:
                 else:
                     print(f"Player {self.player_turn} gets an additional move.")
                     self.additional_move = False
-    
+#sprawdzenie, czy padl gol
     def checkGoal(self):
         if self.ball_pos[1] == 0:  # Piłka w lewej bramce
             if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
@@ -491,7 +492,8 @@ class Game:
         self.initGame()
         self.ball_path = []
         self.game_over = False
-    
+
+#ekran tuz po zakonczeniu rozgrywki
     def endGame(self, winner):
         self.screen.fill(CZARNY)
         self.screen.blit(tlo_koniec, (WINDOW_WIDTH // 2 - 200, 120))
@@ -514,6 +516,8 @@ class Game:
         self.screen.blit(text3, text3_rect)
         self.screen.blit(text4, text4_rect)
         pygame.display.update()
+    
+#rysowanie przebytej drogi przez pilke
     def drawBallPath(self):
         for i in range(1, len(self.ball_path)):
             start = self.ball_path[i - 1]
@@ -522,7 +526,7 @@ class Game:
             end_pos = (end[1] * CELL_SIZE + CELL_SIZE // 2, end[0] * CELL_SIZE + CELL_SIZE // 2)
             pygame.draw.line(self.screen, CZARNY, start_pos, end_pos, 3)  # Draw the line
             self.drawArrow(start_pos, end_pos)
-        
+     
     def drawArrow(self, start_pos, end_pos):
         angle = math.atan2(end_pos[1] - start_pos[1], end_pos[0] - start_pos[0])
         arrow_length = 10
