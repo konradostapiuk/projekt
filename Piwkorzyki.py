@@ -414,9 +414,11 @@ class Game:
             ny, nx = y + direction[0], x + direction[1]
             if 0 <= ny < BOARD_HEIGHT and 0 <= nx < BOARD_WIDTH:
                 direction_index = self.getDirection(self.ball_pos, (ny, nx))
-                if direction_index is not None and not self.lines[y, x, direction_index]:
-                    return True
-        return False
+                opposite_direction_index = (direction_index + 4) % 8
+                if direction_index is not None and \
+                    not self.lines[y, x, direction_index] and \
+                        not self.lines[ny, nx, opposite_direction_index]:
+                            return True
     
 #oddanie gola przeciwnikowi za brak mozliwosci ruchu
     def scoreForOpponent(self):
