@@ -1,4 +1,4 @@
-Do uruchomienia prototypu potrzebna jest biblioteka pygame, PyQt5 i NumPy 
+Do uruchomienia prototypu potrzebne są nam biblioteki pygame, sys, math oraz numpy
 
 Aby włączyć prototyp uruchamiamy skrypt o nazwie Piwkorzyki.py. 
 
@@ -8,8 +8,7 @@ Przycisk "ustawienia" przekierowuje nas do okna, w którym wybieramy techniczne,
 Przycisk "zasady" przekierowuje nas do okna, w którym opisane są zasady gry
 Przycisk "graj" przekierowuje nas do okna, w którym znajduje się gra. Na początku obowiązkowy będzie wybór ilości goli potrzebnej do zwycięstwa.
 
-Po zakończonej rozgrywce pojawią się trzy przyciski:
-Przycisk "zagraj ponownie" rozpocznie rozgrywkę jeszcze raz,
-Przycisk "wyjdź do menu" przekieruje nas do menu głównego
-Przycisk "wyjdź" zamknie aplikację
+Po zakończonej rozgrywce pojawią się dwie możliwości
+Kliknięcie Q spowoduje ponowne rozpoczęcie rozgrywki
+Kliknięcie R spowoduje wyjście z gry 
  
