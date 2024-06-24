@@ -14,7 +14,6 @@ FPS = 60
 BOARD_WIDTH = 15
 BOARD_HEIGHT = 10
 CELL_SIZE = 70
-
 # Rozmiary okna
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
 WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
@@ -47,7 +46,7 @@ black = (0, 0, 0)
 white = (255, 255, 255)
 
 # włączenie ekranu startowego
-def intro():
+def intro() -> bool:
     intro_active = True
     while intro_active:
         for event in pygame.event.get():
@@ -68,7 +67,7 @@ def intro():
         
         
 class Przycisk:
-    def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
+    def __init__(self, x_cord:int, y_cord:int, file_name:str, new_width:int, new_height:int):
         self.initial_x = x_cord
         self.initial_y = y_cord
         self.initial_width = new_width
@@ -81,12 +80,12 @@ class Przycisk:
         self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
         self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
     #reakcja przycisku na kliknięcie    
-    def klik(self):
+    def klik(self) -> bool:
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             if pygame.mouse.get_pressed()[0]:
                 return True
     #wyswietlenie przycisku na ekranie
-    def wyswietl(self, window):
+    def wyswietl(self, window:pygame.surface.Surface):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             window.blit(self.hovered_button_image, (self.x_cord, self.y_cord))
         else:
@@ -103,7 +102,7 @@ class Przycisk:
         self.skaluj(self.initial_width, self.initial_height)
 
 #zaladowanie przyciskow w menu glownym
-def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
+def ustawienia_przyciski(i_szerokosc:int, odstep_y:int, przycisk_szer:int, przycisk_wys:int) -> list:
     przyciski_y = tytul_y + 150
     return [
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_graj3", przycisk_szer, przycisk_wys),
@@ -112,7 +111,7 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y+105, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
 #zaladowanie przyciskow podczas pauzy w rozgrywce
-def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
+def ustawienia_przyciski_pauza(i_szerokosc:int, odstep_y:int, przycisk_szer:int, przycisk_wys:int) -> list: 
     przyciski_y = tytul_y + 30
     return [
         Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y + 75, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
@@ -133,7 +132,7 @@ przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 80) // 2, "f
 przyciski_pauza = ustawienia_przyciski_pauza(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
 # wyswietlenie menu glownego
-def pokaz_menu(window):
+def pokaz_menu(window:pygame.surface.Surface)-> None:
     window.blit(tlo, (0, 0))
     tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, tytul_y))
     window.blit(tytul_image, tytul_rect)
@@ -175,7 +174,7 @@ tekst_zasad = [
     "Umieszczenie piłki w swojej bramce skutkuje jej powrotem na środek boiska.",
 ]
 #wyswietlenie zasad
-def pokaz_zasady(window):
+def pokaz_zasady(window:pygame.surface.Surface) -> None:
     window.blit(tlo_zasady, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
     zasady_tytul_text = "ZASADY:"
@@ -199,7 +198,7 @@ def pokaz_zasady(window):
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
 #wyswietlenie zasad w trybie fullscreen
-def pokaz_zasady_fullscreen(window):
+def pokaz_zasady_fullscreen(window:pygame.surface.Surface) -> None:
     window.blit(tlo_zasady2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     zasady_tytul_text = "ZASADY:"
@@ -223,7 +222,7 @@ def pokaz_zasady_fullscreen(window):
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 100))
 
 #wyswietlenie ustawien
-def pokaz_ustawienia(window):
+def pokaz_ustawienia(window:pygame.surface.Surface):
     window.blit(tlo_ustawienia, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
     ustawienia_tytul_text = "USTAWIENIA:"
@@ -246,7 +245,7 @@ def pokaz_ustawienia(window):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
-def pokaz_ustawienia_fullscreen(window):
+def pokaz_ustawienia_fullscreen(window:pygame.surface.Surface):
     window.blit(tlo_ustawienia2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
     ustawienia_tytul_text = "USTAWIENIA:"
@@ -274,7 +273,7 @@ def pokaz_ustawienia_fullscreen(window):
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 150))
 
 
-def pokaz_menu_fullscreen(window):
+def pokaz_menu_fullscreen(window:pygame.surface.Surface):
     window.blit(tlo_fullscreen, (0, 0))
     tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
     tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
