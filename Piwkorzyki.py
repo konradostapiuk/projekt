@@ -1,3 +1,4 @@
+# Import niezbędnych rzeczy
 import pygame
 import sys
 import math
@@ -20,11 +21,13 @@ CELL_SIZE = 70
 WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE
 WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE
 
+# Stworzenie okna
 pygame.init()
 okienko = pygame.display.set_mode((OKNO_SZER, OKNO_WYS), 0, 32)
 pygame.display.set_caption("Piwkorzyki")
 zegarek = pygame.time.Clock()
 
+# Czcionka
 moja_czcionka = "pricedown bl.otf"
 font = pygame.font.Font(None, 74)
 small_font = pygame.font.Font(None, 36)
@@ -32,7 +35,7 @@ small_font = pygame.font.Font(None, 36)
 # Wyciszenie gry wyłączone przy otwieraniu aplikacji
 wyciszenie = False
 
-#załadowanie wszystkich potrzebnych teł, obiektów graficznych etc.
+# Załadowanie wszystkich potrzebnych teł, obiektów graficznych etc.
 tlo = pygame.image.load("tlo.png")
 tlo_fullscreen = pygame.image.load("tlo2.png")
 tlo_zasady = pygame.image.load("tlo_zasady.png")
@@ -46,6 +49,8 @@ pilka_image = pygame.image.load("pilka.jpg")
 tlo_koniec = pygame.image.load("piwa.jpg")
 tlo_koniec = pygame.transform.scale(tlo_koniec, (400, 300))
 tlo_intro = pygame.image.load("intro.png")
+tlo_wybor = pygame.image.load("tlo_wybor.png")
+tlo_wybor2 = pygame.transform.scale(tlo_wybor, (1920,1080))
 
 # Dźwięki
 uderzenie_sfx = pygame.mixer.Sound("uderzenie.mp3")
@@ -60,7 +65,7 @@ CZERWONY = (255, 0, 0)
 NIEBIESKI = (0, 0, 255)
 ZIELONY = (0, 255, 0)
 
-# włączenie ekranu startowego
+# Włączenie ekranu startowego
 def intro():
     intro_active = True
     intro_sfx.play()
@@ -82,7 +87,7 @@ def intro():
         pygame.display.update()
         
         
-        
+# Utworzenie klasy przycisków        
 class Przycisk:
     def __init__(self, x_cord, y_cord, file_name, new_width, new_height):
         self.initial_x = x_cord
@@ -96,18 +101,18 @@ class Przycisk:
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
         self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
         self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
-    #reakcja przycisku na kliknięcie    
+    # Reakcja przycisku na kliknięcie    
     def klik(self):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             if pygame.mouse.get_pressed()[0]:
                 return True
-    #wyswietlenie przycisku na ekranie
+    # Wyświetlenie przycisku na ekranie
     def wyswietl(self, window):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             window.blit(self.hovered_button_image, (self.x_cord, self.y_cord))
         else:
             window.blit(self.button_image, (self.x_cord, self.y_cord))
-    #przeskalowanie przycisku (glownie do trybu fullscreen)
+    # Przeskalowanie przycisku (głównie do trybu fullscreen)
     def skaluj(self, new_width, new_height):
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
         self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
@@ -118,7 +123,7 @@ class Przycisk:
         self.y_cord = self.initial_y
         self.skaluj(self.initial_width, self.initial_height)
 
-#zaladowanie przyciskow w menu glownym
+# Załadowanie przycisków w menu głównym
 def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 150
     return [
@@ -127,15 +132,25 @@ def ustawienia_przyciski(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y+70, "przycisk_ustawienia3", przycisk_szer, przycisk_wys),
         Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y+105, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
     ]
-#zaladowanie przyciskow podczas pauzy w rozgrywce
+
+# Załadowanie przycisków w menu wyboru
+def ustawienia_przyciski_wybor(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
+    przyciski_y = tytul_y + 150
+    return [
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y, "przycisk_wybor1", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + odstep_y+35, "przycisk_wybor2", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 2 * odstep_y+70, "przycisk_wybor3", przycisk_szer, przycisk_wys),
+        Przycisk((i_szerokosc - przycisk_szer) // 2, przyciski_y + 3 * odstep_y+105, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
+    ]
+
+# Załadowanie przycisków podczas pauzy w rozgrywce
 def ustawienia_przyciski_pauza(i_szerokosc, odstep_y, przycisk_szer, przycisk_wys):
     przyciski_y = tytul_y + 30
     return [
         Przycisk((i_szerokosc - przycisk_szer//2+180) // 2, przyciski_y + odstep_y + 75, "przycisk_wyjdz3", przycisk_szer, przycisk_wys),
-        #Przycisk((i_szerokosc - przycisk_szer//2-180) // 2, przyciski_y + odstep_y - 75, "przycisk_menu", przycisk_szer, przycisk_wys)
     ]
 
-#parametry przycisków (wielkóść, odstępy pomiędzy następnymi przyciskami)
+# Parametry przycisków (wielkóść, odstępy pomiędzy następnymi przyciskami)
 przycisk_szer = 400
 przycisk_wys = 120
 odstepy_y = 30
@@ -143,14 +158,13 @@ tytul_y = 150
 full_screen = False
 
 przyciski_menu = ustawienia_przyciski(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
-
 przycisk_pelny_ekran = Przycisk((OKNO_SZER - 200) // 2, (OKNO_WYS - 450) // 2, "fullscreen", 200, 200)
 przycisk_glos = Przycisk((OKNO_SZER - 150) // 2, (OKNO_WYS + 200) // 2, "glos", 150, 150)
 przycisk_wyciszony = Przycisk((OKNO_SZER - 150) // 2, (OKNO_WYS + 200) // 2, "wyciszony", 150, 150)
-
 przyciski_pauza = ustawienia_przyciski_pauza(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
+przyciski_wybor = ustawienia_przyciski_wybor(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
 
-# wyswietlenie menu glownego
+# Wyświetlenie menu głównego
 def pokaz_menu(window):
     window.blit(tlo, (0, 0))
     tytul_rect = tytul_image.get_rect(center=(OKNO_SZER // 2, tytul_y))
@@ -158,6 +172,16 @@ def pokaz_menu(window):
     for przycisk in przyciski_menu:
         przycisk.wyswietl(window)
 
+# Wyświetlenie menu głównego w trybie fullscreen       
+def pokaz_menu_fullscreen(window):
+    window.blit(tlo_fullscreen, (0, 0))
+    tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
+    tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
+    window.blit(tytul_image_fs, tytul_rect)
+    for przycisk in przyciski_menu:
+        przycisk.wyswietl(window)
+
+# Stworzenie main
 def main():
     intro()
     running = True
@@ -166,11 +190,10 @@ def main():
             if event.type == MOUSEBUTTONDOWN:
                 running = False       
         pokaz_menu(okienko)
-
-
 if __name__ == '__main__':
     main()
-    
+
+# Edycja tekstu
 def wrap_text(text, font, max_width):
     words = text.split(' ')
     lines = []
@@ -184,6 +207,8 @@ def wrap_text(text, font, max_width):
             current_line = word + " "
     lines.append(current_line)
     return lines
+        
+# Zasady
 tekst_zasad = [
     "Piwkorzyki, to gra dla dwóch graczy rozgrywana na boisku o wymiarach 15x10 kratek, z bramkami o szerokości dwóch kratek",
     "Celem gry jest umieszczenie w bramce przeciwnika wirtualnej piłki (zdobycie gola), która początkowo znajduje się na środku boiska, a w kolejnych ruchach jest przemieszczana pomiędzy sąsiednimi przecięciami kratek. W jednym ruchu piłka może być przemieszczona na jedno z ośmiu sąsiednich pól (poziomo, pionowo lub po ukosie). W wyniku przemieszczenia pozycja początkowa jest łączona odcinkiem z pozycją końcową.",
@@ -192,16 +217,17 @@ tekst_zasad = [
     "Gra kończy się gdy jeden z graczy zdobędzie dwa gole.",
     "Umieszczenie piłki w swojej bramce skutkuje golem dla przeciwnika.",
 ]
-#wyswietlenie zasad
+        
+# Wyświetlenie zasad
 def pokaz_zasady(window):
     window.blit(tlo_zasady, (0, 0))
-    tytul_font = pygame.font.Font(moja_czcionka, 100)
+    tytul_font = pygame.font.Font(moja_czcionka, 120)
     zasady_tytul_text = "ZASADY:"
     zasady_tytul = tytul_font.render(zasady_tytul_text, True, (255, 255, 255))  
     zasady_tytul_rect = zasady_tytul.get_rect(center=(OKNO_SZER // 2, 80))
     window.blit(zasady_tytul, zasady_tytul_rect)
     
-    font = pygame.font.Font(moja_czcionka, 24)  
+    font = pygame.font.Font(moja_czcionka, 26)  
     y_offset = 200
     line_height = font.get_linesize()  
     paragraph_spacing = 40 
@@ -216,7 +242,7 @@ def pokaz_zasady(window):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
-#wyswietlenie zasad w trybie fullscreen
+# Wyświetlenie zasad w trybie fullscreen
 def pokaz_zasady_fullscreen(window):
     window.blit(tlo_zasady2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
@@ -240,7 +266,7 @@ def pokaz_zasady_fullscreen(window):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, (255, 255, 255))
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 50))
 
-#wyswietlenie ustawien
+# Wyświetlenie ustawień
 def pokaz_ustawienia(window):
     window.blit(tlo_ustawienia, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 100)
@@ -275,6 +301,7 @@ def pokaz_ustawienia(window):
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, BIALY)
     window.blit(powrot_text, (OKNO_SZER // 2 - powrot_text.get_width() // 2, OKNO_WYS - 100))
 
+# Wyświetlenie ustawień w trybie fullscreen
 def pokaz_ustawienia_fullscreen(window):
     window.blit(tlo_ustawienia2, (0, 0))
     tytul_font = pygame.font.Font(moja_czcionka, 150)
@@ -282,7 +309,6 @@ def pokaz_ustawienia_fullscreen(window):
     ustawienia_tytul = tytul_font.render(ustawienia_tytul_text, True, BIALY)
     ustawienia_tytul_rect = ustawienia_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
     window.blit(ustawienia_tytul, ustawienia_tytul_rect)
-    
     font = pygame.font.Font(moja_czcionka, 72)
     tekst = [
              
@@ -311,21 +337,32 @@ def pokaz_ustawienia_fullscreen(window):
     window.blit(napis, ((FULLSCREEN_SZER - napis.get_width()) // 2, (FULLSCREEN_WYS) // 2 - 300))
     napis2 = font.render("GłOS", True, BIALY)
     window.blit(napis2, ((FULLSCREEN_SZER - napis2.get_width()) // 2, (FULLSCREEN_WYS) // 2 + 50))
-
     powrot_text = font.render("Kliknij, aby wrócić do menu", True, BIALY)
     window.blit(powrot_text, (FULLSCREEN_SZER // 2 - powrot_text.get_width() // 2, FULLSCREEN_WYS - 150))
 
-def pokaz_menu_fullscreen(window):
-    window.blit(tlo_fullscreen, (0, 0))
-    tytul_image_fs = pygame.transform.scale(tytul_image, (FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
-    tytul_rect = tytul_image_fs.get_rect(center=(FULLSCREEN_SZER // 2, FULLSCREEN_WYS // 8))
-    window.blit(tytul_image_fs, tytul_rect)
-    for przycisk in przyciski_menu:
+# Wyświetlenie menu wyboru        
+def pokaz_wybor(window):
+    window.blit(tlo_wybor, (0, 0))
+    wybor_font = pygame.font.Font(moja_czcionka, 100)
+    wybor_tytul_text = "WYBIERZ DŁUGOŚĆ GRY:"
+    wybor_tytul = wybor_font.render(wybor_tytul_text, True, BIALY)
+    wybor_tytul_rect = wybor_tytul.get_rect(center=(OKNO_SZER // 2, 80))
+    window.blit(wybor_tytul, wybor_tytul_rect)
+    for przycisk in przyciski_wybor:
         przycisk.wyswietl(window)
-        
 
-GOALS_TO_WIN = 2
-
+# Wyświetlenie menu wyboru w trybie fullscreen        
+def pokaz_wybor_fullscreen(window):
+    window.blit(tlo_wybor2, (0, 0))
+    wybor_font = pygame.font.Font(moja_czcionka, 150)
+    wybor_tytul_text = "WYBIERZ DŁUGOŚĆ GRY:"
+    wybor_tytul = wybor_font.render(wybor_tytul_text, True, BIALY)
+    wybor_tytul_rect = wybor_tytul.get_rect(center=(FULLSCREEN_SZER // 2, 80))
+    window.blit(wybor_tytul, wybor_tytul_rect)
+    for przycisk in przyciski_wybor:
+        przycisk.wyswietl(window)
+    
+#Utworzenie klasy gry
 class Game:
     def __init__(self):
         pygame.init()
@@ -340,7 +377,7 @@ class Game:
         self.resetGame()
         self.ball_path = [(BOARD_HEIGHT // 2, BOARD_WIDTH // 2)]
 
-#zaladowanie interfejsu graficznego okna rozgrywki
+# Załadowanie interfejsu graficznego okna rozgrywki
     def load_images(self):
         self.pilka_image = pygame.image.load("pilka.jpg")
         self.pilka_image = pygame.transform.scale(self.pilka_image, (CELL_SIZE, CELL_SIZE))
@@ -356,7 +393,7 @@ class Game:
         self.player_turn = 1
         self.scores = {1: 0, 2: 0}
 
-#zaladowanie boiska
+# Załadowanie boiska
     def drawBoard(self):
         self.screen.fill(BIALY)
         board_rect = pygame.Rect(0, 0, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE)
@@ -389,7 +426,7 @@ class Game:
         self.screen.blit(text, text_rect)
         pygame.display.update()
         
-#ekran pauzy
+# Ekran pauzy
     def MenuPauza(self):
         self.screen.blit(tlo_pauza, (0, 0))
         font = pygame.font.Font(None, 150)
@@ -404,7 +441,7 @@ class Game:
             przycisk.wyswietl(self.screen)
         pygame.display.update()
 
-#zasady prawidlowego ruchu   
+# Zasady prawidłowego ruchu   
     def isValidMove(self, pos):
         y, x = pos
         direction = self.getDirection(self.ball_pos, pos)
@@ -441,7 +478,7 @@ class Game:
         else:
             return None
         
-#sprawdzenie czy gracz ma mozliwosc wykonania ruchu
+# Sprawdzenie czy gracz ma możliwosc wykonania ruchu
     def hasAvailableMoves(self):
         y, x = self.ball_pos
         directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
@@ -455,7 +492,7 @@ class Game:
                         not self.lines[ny, nx, opposite_direction_index]:
                             return True
     
-#oddanie gola przeciwnikowi za brak mozliwosci ruchu
+# Oddanie gola przeciwnikowi za brak możliwosci ruchu
     def scoreForOpponent(self):
         self.player_turn = 3 - self.player_turn  # Przełączanie tury gracza
         print(f"Player {self.player_turn} scores due to no available moves!")
@@ -468,7 +505,7 @@ class Game:
         if self.scores[self.player_turn] >= GOALS_TO_WIN:
             self.endGame(self.player_turn)
             
-#mechanika ruszania piłką
+# Mechanika ruszania piłką
     def moveBall(self, pos):
         if not (0 <= pos[0] < BOARD_HEIGHT and 0 <= pos[1] < BOARD_WIDTH):
             print(f"Pozycja {pos} jest poza zakresem")
@@ -491,7 +528,7 @@ class Game:
             else:
                 if not self.hasAvailableMoves():
                     self.scoreForOpponent()
-#sprawdzenie, czy padl gol
+# Sprawdzenie, czy padł gol
     def checkGoal(self):
         if self.ball_pos[1] == 0:  # Piłka w lewej bramce
             if self.ball_pos[0] in range((BOARD_HEIGHT - 2) // 2, (BOARD_HEIGHT + 2) // 2):
@@ -549,7 +586,7 @@ class Game:
         self.ball_path = []
         self.game_over = False
 
-#ekran tuz po zakonczeniu rozgrywki
+# Ekran tuż po zakończeniu rozgrywki
     def endGame(self, winner):
         if not wyciszenie:
             piosenka_sfx.play()
@@ -576,7 +613,7 @@ class Game:
         self.screen.blit
         pygame.display.update()
     
-#rysowanie przebytej drogi przez pilke
+# Rysowanie przebytej drogi przez piłkę
     def drawBallPath(self):
         for i in range(1, len(self.ball_path)):
             start = self.ball_path[i - 1]
@@ -600,7 +637,7 @@ class Game:
         )
         pygame.draw.polygon(self.screen, CZARNY, [end_pos, arrow_point1, arrow_point2])
         
-#dzialanie okna z rozgrywką
+# Działanie okna z rozgrywką
     def run(self):
         running = True
         current_screen = "menu"
@@ -636,8 +673,6 @@ class Game:
                 if przyciski_pauza[0].klik():
                     pygame.quit()
                     pokaz_menu(okienko)
-                #elif przyciski_pauza[1].klik():
-
             elif not self.game_over:
                 self.drawBoard()
                 ball_screen_pos = (
@@ -651,7 +686,8 @@ class Game:
             self.clock.tick(30)
         pygame.quit()
 current_screen = "menu"
-   
+
+# Działanie przycisków menu głównego        
 graj = True
 while graj:
     for zdarzenie in pygame.event.get():
@@ -660,7 +696,7 @@ while graj:
         elif zdarzenie.type == pygame.MOUSEBUTTONDOWN:
             if current_screen == "menu":
                 if przyciski_menu[0].klik():
-                    current_screen = "gra"  
+                    current_screen = "wybor"  
                 elif przyciski_menu[1].klik():
                     current_screen = "zasady"
                 elif przyciski_menu[2].klik():
@@ -687,7 +723,21 @@ while graj:
                     current_screen = "menu"
             elif current_screen == "zasady":
                 current_screen = "menu"
-    
+            elif current_screen == "wybor":
+                if przyciski_wybor[0].klik():  
+                    GOALS_TO_WIN = 1
+                    current_screen = "gra"
+                if przyciski_wybor[1].klik():  
+                    GOALS_TO_WIN = 2
+                    current_screen = "gra"
+                elif przyciski_wybor[2].klik():  
+                    GOALS_TO_WIN = 3
+                    current_screen = "gra"
+                elif przyciski_wybor[3].klik():
+                    current_screen = "menu"
+            elif current_screen == "gra":
+                game = Game()
+                game.run()   
     if current_screen == "menu":  
         if full_screen:
             pokaz_menu_fullscreen(okienko)
@@ -703,11 +753,14 @@ while graj:
             pokaz_ustawienia_fullscreen(okienko)
         else:
             pokaz_ustawienia(okienko)
-    elif current_screen == "gra":
-        game = Game()
-        game.run()
- 
+    elif current_screen == "wybor":
+        if full_screen:
+            pokaz_wybor_fullscreen(okienko)
+        else:
+            pokaz_wybor(okienko)
     pygame.display.update()
     zegarek.tick(FPS)
+ 
 
+#Koniec programu
 pygame.quit()
