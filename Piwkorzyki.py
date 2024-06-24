@@ -379,9 +379,10 @@ class Game:
         if abs(self.ball_pos[0] - y) > 1 or abs(self.ball_pos[1] - x) > 1:
             print("Nieprawidłowa odległość ruchu dla piłki")
             return False
-        if self.lines[self.ball_pos[0], self.ball_pos[1], direction]:
-            print(f"Linia w kierunku {direction} jest już narysowana")
-            return False
+        if self.lines[self.ball_pos[0], self.ball_pos[1], direction] or \
+            self.lines[y, x, (direction + 4) % 8]:
+                print(f"Linia w kierunku {direction} jest już narysowana")
+                return False
         return True
     
     def getDirection(self, start, end):
