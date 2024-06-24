@@ -80,18 +80,18 @@ class Przycisk:
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
         self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
         self.hitbox = pygame.Rect(self.x_cord, self.y_cord, new_width, new_height)
-        
+    #reakcja przycisku na kliknięcie    
     def klik(self):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             if pygame.mouse.get_pressed()[0]:
                 return True
-    
+    #wyswietlenie przycisku na ekranie
     def wyswietl(self, window):
         if self.hitbox.collidepoint(pygame.mouse.get_pos()):
             window.blit(self.hovered_button_image, (self.x_cord, self.y_cord))
         else:
             window.blit(self.button_image, (self.x_cord, self.y_cord))
-    
+    #przeskalowanie przycisku (glownie do trybu fullscreen)
     def skaluj(self, new_width, new_height):
         self.button_image = pygame.transform.scale(self.button_image, (new_width, new_height))
         self.hovered_button_image = pygame.transform.scale(self.hovered_button_image, (new_width, new_height))
@@ -554,7 +554,7 @@ class Game:
             end_pos[1] - arrow_length * math.sin(angle + arrow_angle)
         )
         pygame.draw.polygon(self.screen, CZARNY, [end_pos, arrow_point1, arrow_point2])
-
+#dzialanie okna z rozgrywką
     def run(self):
         running = True
         current_screen = "menu"
