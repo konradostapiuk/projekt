@@ -75,7 +75,7 @@ Plan działania na następne tygodnie jest następujący:
 
 3. Udoskonalić grę: (opcjonalnie - jeśli czas pozwoli):
 - umożliwić wybór długości gry                                                ZROBIONE
-- dodać kilka innych modeli boisk oraz piłek do wyboru
+- dodać kilka innych modeli piłek do wyboru                                   ZROBIONE (WYBÓR LOSOWY)
 - dodać możliwość wybroru niestandardowego wyjściowego położenia piłki
 
 4. Wersja 2.0 (bardzo opcjonalnie - mało prawdopodobne, że wystarczy czasu):
@@ -83,6 +83,4 @@ Plan działania na następne tygodnie jest następujący:
 - stworzyć drużyny
 - stworzyć inne tryby gry
 - dodać więcej efektów specjalnych
-- stworzyć więcej modeli graficznych 
-- poprawić wygląd gry
 
