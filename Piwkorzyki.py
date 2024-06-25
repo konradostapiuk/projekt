@@ -597,7 +597,7 @@ class Game:
         return False
     def resetGame(self):
         self.initGame()
-        self.ball_path = []
+        self.ball_path = [self.ball_pos]
         self.game_over = False
 
 # Ekran tuż po zakończeniu rozgrywki
