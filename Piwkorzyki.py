@@ -89,13 +89,16 @@ def intro():
                 pygame.mixer.stop()
                 
         okienko.blit(tlo_intro, (0, 0))
-
+        intro_text = small_font.render("Gra zawiera obrazy wygenerowane przy pomocy sztucznej inteligencji.", True, BIALY)
+        intro_text_rect = intro_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 100))
+        okienko.blit(intro_text, intro_text_rect)
         skip_text = small_font.render('Kliknij dwukrotnie, aby wejść do gry.', True, BIALY)
         skip_text_rect = skip_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 50))
         okienko.blit(skip_text, skip_text_rect)
 
         pygame.display.update()
-        
+
+
         
 # Utworzenie klasy przycisków        
 class Przycisk:
