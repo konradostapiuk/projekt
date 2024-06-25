@@ -732,6 +732,8 @@ while graj:
                         okienko = pygame.display.set_mode((OKNO_SZER, OKNO_WYS), 0, 32)
                         przyciski_menu = ustawienia_przyciski(OKNO_SZER, odstepy_y + przycisk_wys, przycisk_szer, przycisk_wys)
                         przycisk_pelny_ekran.resetuj()
+                        przycisk_glos.resetuj()
+                        przycisk_wyciszony.resetuj()
                         full_screen = False
                 else:
                     current_screen = "menu"
