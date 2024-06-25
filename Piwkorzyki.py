@@ -775,7 +775,6 @@ while graj:
             pokaz_wybor(okienko)
     pygame.display.update()
     zegarek.tick(FPS)
- 
 
-#Koniec programu
+# Koniec programu
 pygame.quit()
