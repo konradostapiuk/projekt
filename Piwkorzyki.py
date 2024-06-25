@@ -96,7 +96,7 @@ def intro():
         skip_text_rect = skip_text.get_rect(center=(OKNO_SZER / 2, OKNO_WYS - 50))
         okienko.blit(skip_text, skip_text_rect)
 
-        pygame.display.update()
+        pygame.display.flip()
 
 
         
@@ -439,7 +439,6 @@ class Game:
             text = font.render(f"Player {self.player_turn} turn (<--)", True, CZARNY)
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT + 25))
         self.screen.blit(text, text_rect)
-        pygame.display.update()
         
 # Ekran pauzy
     def MenuPauza(self):
@@ -454,7 +453,7 @@ class Game:
         self.screen.blit(text2, text2_rect)
         for przycisk in przyciski_pauza:
             przycisk.wyswietl(self.screen)
-        pygame.display.update()
+        pygame.display.flip()
 
 # Zasady prawidłowego ruchu   
     def isValidMove(self, pos):
@@ -626,7 +625,7 @@ class Game:
         self.screen.blit(text3, text3_rect)
         self.screen.blit(text4, text4_rect)
         self.screen.blit
-        pygame.display.update()
+        pygame.display.flip()
     
 # Rysowanie przebytej drogi przez piłkę
     def drawBallPath(self):
@@ -697,8 +696,8 @@ class Game:
                 self.screen.blit(self.pilka_image, ball_screen_pos)
                 self.drawBallPath()
 
-            pygame.display.update()
-            self.clock.tick(30)
+            pygame.display.flip()
+            self.clock.tick(FPS)
         pygame.quit()
 current_screen = "menu"
 
@@ -773,8 +772,7 @@ while graj:
             pokaz_wybor_fullscreen(okienko)
         else:
             pokaz_wybor(okienko)
-    pygame.display.update()
+    pygame.display.flip()
     zegarek.tick(FPS)
-
 # Koniec programu
 pygame.quit()
